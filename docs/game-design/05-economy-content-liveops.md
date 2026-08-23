@@ -1,13 +1,13 @@
 # 경제 콘텐츠 라이브옵스
 
 - 제품명: 면역 전쟁 (Immunity War)
-- 문서 상태: draft
+- 문서 상태: approved
 - 소유자: ih@toss.im
 - 버전/수정일: v0.1 / 2026-08-23
 - Source of truth: 재화 공식, 보상·비용 canonical 수치, 콘텐츠 재고·생산 예산, 광고 카탈로그
 - Depends on: 02-gdd v0.1
 - Open blockers: 없음 (수치는 economy_sim으로 조정하며 본 문서가 canonical)
-- 승인 근거: 사용자 승인 전
+- 승인 근거: 사용자 승인 "승인한다" / 2026-08-23 (G1 설계 팩 승인)
 
 ## 재화 Source와 Sink
 

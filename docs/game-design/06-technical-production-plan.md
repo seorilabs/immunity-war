@@ -1,13 +1,13 @@
 # 기술 제작 계획
 
 - 제품명: 면역 전쟁 (Immunity War)
-- 문서 상태: draft
+- 문서 상태: approved
 - 소유자: ih@toss.im
 - 버전/수정일: v0.1 / 2026-08-23
 - Source of truth: 아키텍처, 데이터·저장 스키마, 분석 이벤트, 성능 예산, 제작 단계
 - Depends on: 02-gdd v0.1, 05-economy v0.1
 - Open blockers: BLK-003 (AdMob 앱·광고 단위 ID), BLK-TEC-001 (GA4 프로비저닝 — seorilabs-game-provisioning으로 Phase 4에 실행)
-- 승인 근거: 사용자 승인 전
+- 승인 근거: 사용자 승인 "승인한다" / 2026-08-23 (G1 설계 팩 승인)
 
 ## 아키텍처와 엔진
 
