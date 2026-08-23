@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CellDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cell_def.gd" id="1_4j83f"]
+[ext_resource type="Resource" path="res://data/skills/b_cell_skill.tres" id="2_2fh05"]
+
+[resource]
+script = ExtResource("1_4j83f")
+id = &"b_cell"
+display_name = "B세포"
+role = "항체 표식"
+description = "강한 박테리아에 항체 표식을 남겨 집중 공격을 돕습니다."
+color = Color(0.3882353, 0.7019608, 1, 1)
+accent = Color(0.8509804, 0.93333334, 1, 1)
+hp = 95.0
+damage = 12.0
+attack_range = 154.0
+attack_rate = 0.92
+speed = 84.0
+tags = Array[StringName]([&"adaptive", &"ranged", &"antibody"])
+skill = ExtResource("2_2fh05")
+result_copy = "B세포는 항체로 대상을 표식해 면역 반응이 더 정확히 집중되도록 돕는 역할을 모티브로 했습니다."

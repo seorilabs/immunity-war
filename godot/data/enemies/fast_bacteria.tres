@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_def.gd" id="1_are0l"]
+
+[resource]
+script = ExtResource("1_are0l")
+id = &"fast_bacteria"
+display_name = "빠른 침투균"
+tags = Array[StringName]([&"fast"])
+hp = 24.0
+speed = 58.0
+base_damage = 10.0
+radius = 11.0
+color = Color(1, 0.5529412, 0.25882354, 1)

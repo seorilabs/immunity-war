@@ -1,0 +1,68 @@
+[gd_resource type="Theme" load_steps=6 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansKR-wght.ttf" id="1_font"]
+
+[sub_resource type="StyleBoxFlat" id="sb_primary_normal"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.12549, 0.780392, 0.65098, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="sb_primary_pressed"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.109804, 0.686275, 0.572549, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="sb_secondary_normal"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.090196, 0.239216, 0.223529, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="sb_disabled"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.2, 0.313726, 0.298039, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 17
+Button/font_sizes/font_size = 18
+PrimaryButton/base_type = &"Button"
+PrimaryButton/colors/font_color = Color(0.023529, 0.137255, 0.12549, 1)
+PrimaryButton/colors/font_hover_color = Color(0.023529, 0.137255, 0.12549, 1)
+PrimaryButton/colors/font_pressed_color = Color(0.023529, 0.137255, 0.12549, 1)
+PrimaryButton/styles/normal = SubResource("sb_primary_normal")
+PrimaryButton/styles/hover = SubResource("sb_primary_normal")
+PrimaryButton/styles/pressed = SubResource("sb_primary_pressed")
+PrimaryButton/styles/disabled = SubResource("sb_disabled")
+SecondaryButton/base_type = &"Button"
+SecondaryButton/colors/font_color = Color(0.968627, 1, 0.976471, 1)
+SecondaryButton/colors/font_hover_color = Color(0.968627, 1, 0.976471, 1)
+SecondaryButton/colors/font_pressed_color = Color(0.968627, 1, 0.976471, 1)
+SecondaryButton/styles/normal = SubResource("sb_secondary_normal")
+SecondaryButton/styles/hover = SubResource("sb_secondary_normal")
+SecondaryButton/styles/pressed = SubResource("sb_secondary_normal")
+SecondaryButton/styles/disabled = SubResource("sb_disabled")
