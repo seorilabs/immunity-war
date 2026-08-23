@@ -1,30 +1,29 @@
-extends Node2D
 class_name Projectile
+extends Node2D
+## 유도 투사체. 컨트롤러가 step으로 구동한다.
 
-var target: Node2D
+var target: EnemyUnit
 var damage := 8.0
 var speed := 320.0
 var projectile_color := Color.WHITE
-var source_cell_id := ""
 
-func setup(new_target: Node2D, new_damage: float, new_color: Color, new_source_cell_id: String) -> void:
+func configure(new_target: EnemyUnit, new_damage: float, new_color: Color) -> void:
 	target = new_target
 	damage = new_damage
 	projectile_color = new_color
-	source_cell_id = new_source_cell_id
 
-func _process(delta: float) -> void:
+func step(delta: float) -> void:
 	if not is_instance_valid(target) or not target.alive:
 		queue_free()
 		return
 
-	var to_target := target.global_position - global_position
-	if to_target.length() <= max(12.0, speed * delta):
-		target.take_damage(damage, source_cell_id)
+	var to_target := target.position - position
+	if to_target.length() <= maxf(12.0, speed * delta):
+		target.take_damage(damage)
 		queue_free()
 		return
 
-	global_position += to_target.normalized() * speed * delta
+	position += to_target.normalized() * speed * delta
 	rotation = to_target.angle()
 	queue_redraw()
 
@@ -38,4 +37,3 @@ func _with_alpha(color: Color, alpha: float) -> Color:
 	var copy := color
 	copy.a = alpha
 	return copy
-

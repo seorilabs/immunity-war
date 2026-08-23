@@ -26,3 +26,4 @@ jobs:
       project_dir: godot
       check_command: |
         bash scripts/godot_quality_gate.sh --project godot --smoke-scene res://tests/test_runner.tscn
+        godot --headless --path godot res://tests/balance_sim.tscn
