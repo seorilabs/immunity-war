@@ -1,13 +1,13 @@
 # 리서치 조사서
 
 - 제품명: 면역 전쟁 (Immunity War)
-- 문서 상태: draft
+- 문서 상태: approved
 - 소유자: ih@toss.im
 - 버전/수정일: v0.1 / 2026-08-23
 - Source of truth: 경쟁작 분석, 출처 원장, 시장 트렌드, 검증 가설
 - Depends on: 00-product-brief v0.1
 - Open blockers: 실기기 플레이 실측 미수행 (조사 한계에 기재, 후속은 game-teardown 스킬)
-- 승인 근거: 사용자 승인 전
+- 승인 근거: 사용자 승인 "승인한다" / 2026-08-23 (G1 설계 팩 승인)
 
 ## 조사 범위
 

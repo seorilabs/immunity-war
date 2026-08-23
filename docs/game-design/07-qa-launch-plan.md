@@ -1,13 +1,13 @@
 # QA 론칭 계획
 
 - 제품명: 면역 전쟁 (Immunity War)
-- 문서 상태: draft
+- 문서 상태: approved
 - 소유자: ih@toss.im
 - 버전/수정일: v0.1 / 2026-08-23
 - Source of truth: QA 매트릭스, 스토어·정책 준비 상태, 출시 게이트, 소프트론칭 기준
 - Depends on: 02-gdd v0.1, 06-technical v0.1
 - Open blockers: BLK-001 (package/bundle id), BLK-002 (연령 등급 재확인), BLK-003 (AdMob ID), BLK-QA-001 (실기기 매트릭스는 사용자 보유 기기 확인 후 확정)
-- 승인 근거: 사용자 승인 전
+- 승인 근거: 사용자 승인 "승인한다" / 2026-08-23 (G1 설계 팩 승인)
 
 ## 기기와 플랫폼 매트릭스
 
@@ -110,8 +110,8 @@
 
 | Gate | required evidence | owner | status | blocker | approval date |
 | --- | --- | --- | --- | --- | --- |
-| G0 research | 01 문서 + 출처 원장 | 에이전트 | 진행 중 | 없음 | 대기 |
-| G1 design | 00~07 approved + validator strict 통과 | 사용자 | 대기 | 사용자 승인 | 대기 |
+| G0 research | 01 문서 + 출처 원장 | 에이전트 | 완료 | 없음 | 2026-08-23 |
+| G1 design | 00~07 approved + validator strict 통과 | 사용자 | 통과 | 없음 | 2026-08-23 |
 | G2 vertical slice | 챕터1 최종 품질 영상 + UI Gate EV-001~004 | 사용자 | 대기 | G1, 아트 앵커 | 대기 |
 | G3 content complete | 28 스테이지 + balance/economy_sim 리포트 | 에이전트 | 대기 | G2 | 대기 |
 | G4 release candidate | 서명 빌드 실기기 QA 전 항목 + 스토어 메타 등록 | 사용자 | 대기 | BLK-001~003 | 대기 |

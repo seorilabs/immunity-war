@@ -1,13 +1,13 @@
 # 게임 디자인 문서
 
 - 제품명: 면역 전쟁 (Immunity War)
-- 문서 상태: draft
+- 문서 상태: approved
 - 소유자: ih@toss.im
 - 버전/수정일: v0.1 / 2026-08-23
 - Source of truth: 게임 규칙, 상수, 유닛/적/스테이지 정의, 진행 구조, 온보딩, 저장 계약
 - Depends on: 00-product-brief v0.1, 01-research-dossier v0.1
 - Open blockers: 없음 (수치는 balance_sim으로 조정 예정이며 본 문서가 초기값 canonical)
-- 승인 근거: 사용자 승인 전
+- 승인 근거: 사용자 승인 "승인한다" / 2026-08-23 (G1 설계 팩 승인)
 
 ## 경험 타임라인
 

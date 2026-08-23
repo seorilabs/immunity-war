@@ -1,13 +1,13 @@
 # 제품 브리프
 
 - 제품명: 면역 전쟁 (Immunity War)
-- 문서 상태: draft
+- 문서 상태: approved
 - 소유자: ih@toss.im
 - 버전/수정일: v0.1 / 2026-08-23
 - Source of truth: 제품 방향, 타깃, 범위, 성공/중단 기준
 - Depends on: 없음 (최초 문서). 원 기획서(Obsidian `기획 인박스/폐기/immunity-war 최초 기획서.md`, 2026-05-25)를 참고 입력으로 사용
 - Open blockers: BLK-001, BLK-002, BLK-003
-- 승인 근거: 사용자 승인 전 (방향 결정 4건은 2026-08-23 사용자 확정 — decision-log DEC-001~004)
+- 승인 근거: 사용자 승인 "승인한다" / 2026-08-23 (G1 설계 팩 승인)
 
 ## 제품 계약
 
