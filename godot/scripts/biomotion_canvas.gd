@@ -19,7 +19,7 @@ func _draw() -> void:
 	for i in range(7):
 		var y := size.y * (0.14 + i * 0.12)
 		var alpha := 0.06 + 0.03 * sin(elapsed + i)
-		draw_line(Vector2(0.0, y), Vector2(size.x, y + sin(elapsed * 0.7 + i) * 12.0), Color(0.7, 1.0, 0.85, alpha), 1.5, true)
+		draw_line(Vector2(0.0, y), Vector2(size.x, y + sin(elapsed * 0.7 + i) * 12.0), Color(0.7, 1.0, 0.85, alpha), 2.5, true)
 
 	var base_x := size.x * 0.23
 	draw_line(Vector2(base_x, 0.0), Vector2(base_x, size.y), Color("#B6FFE9"), 5.0, true)

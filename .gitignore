@@ -1,5 +1,49 @@
+# OS / editors
 .DS_Store
-.godot/
-build/web/
-build/tmp/
-tmp/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Local agent overrides
+/AGENTS.local.md
+/AGENT.local.md
+.claude/settings.local.json
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.p8
+*.p12
+*.mobileprovision
+*.keystore
+*.jks
+*.key
+service-account*.json
+firebase-adminsdk*.json
+GoogleService-Info.plist
+google-services.json
+
+# Godot
+godot/.godot/
+godot/.import/
+godot/export_credentials.cfg
+
+# Build outputs
+build/
+dist/
+out/
+artifacts/
+release-artifacts/
+*.apk
+*.aab
+*.ipa
+*.xcarchive
+*.ait
+*.zip
+
+# Logs
+*.log
+logs/

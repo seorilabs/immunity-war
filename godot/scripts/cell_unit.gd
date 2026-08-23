@@ -66,7 +66,7 @@ func _draw() -> void:
 	draw_circle(Vector2(radius * 0.32, radius * 0.22), radius * 0.22, _with_alpha(Color("#0B2D2A"), 0.26))
 
 	if is_leader:
-		draw_arc(Vector2.ZERO, radius + 7.0, -PI * 0.45, PI * 1.45, 48, accent_color, 3.5, true)
+		draw_arc(Vector2.ZERO, radius + 7.0, -PI * 0.45, PI * 1.45, 48, accent_color, 4.5, true)
 
 func _with_alpha(color: Color, alpha: float) -> Color:
 	var copy := color

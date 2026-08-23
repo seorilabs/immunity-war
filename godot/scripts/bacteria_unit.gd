@@ -100,13 +100,13 @@ func _draw() -> void:
 	if mark_timer > 0.0:
 		var mark_color := Color("#BFE9FF")
 		mark_color.a = 0.9
-		draw_arc(Vector2.ZERO, radius * 1.55, -PI * 0.2, PI * 1.4, 34, mark_color, 3.0, true)
+		draw_arc(Vector2.ZERO, radius * 1.55, -PI * 0.2, PI * 1.4, 34, mark_color, 4.0, true)
 		draw_circle(Vector2(radius * 1.2, -radius * 1.0), 4.0, mark_color)
 
 	if stun_timer > 0.0:
 		var stun_color := Color("#FFF6B8")
 		stun_color.a = 0.85
-		draw_arc(Vector2.ZERO, radius * 1.7, 0.0, TAU * 0.82, 28, stun_color, 3.0, true)
+		draw_arc(Vector2.ZERO, radius * 1.7, 0.0, TAU * 0.82, 28, stun_color, 4.0, true)
 
 	var bar_width: float = radius * 2.4
 	var hp_ratio: float = clamp(hp / max_hp, 0.0, 1.0)

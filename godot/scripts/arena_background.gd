@@ -13,11 +13,11 @@ func _draw() -> void:
 	for i in range(11):
 		var y := 126.0 + i * 52.0
 		var color := Color(0.48, 1.0, 0.78, 0.035 + float(i % 2) * 0.02)
-		draw_line(Vector2(base_x + 20.0, y), Vector2(size.x, y + sin(Time.get_ticks_msec() * 0.001 + i) * 12.0), color, 2.0, true)
+		draw_line(Vector2(base_x + 20.0, y), Vector2(size.x, y + sin(Time.get_ticks_msec() * 0.001 + i) * 12.0), color, 3.0, true)
 
 	for lane in range(3):
 		var y := _lane_y(size, lane)
-		draw_line(Vector2(base_x + 20.0, y), Vector2(size.x - 8.0, y), Color(0.9, 1.0, 0.9, 0.06), 3.0, true)
+		draw_line(Vector2(base_x + 20.0, y), Vector2(size.x - 8.0, y), Color(0.9, 1.0, 0.9, 0.06), 4.0, true)
 
 	draw_rect(Rect2(0.0, 0.0, size.x, 112.0), Color(0.0, 0.0, 0.0, 0.18), true)
 	draw_rect(Rect2(0.0, size.y - 126.0, size.x, 126.0), Color(0.0, 0.0, 0.0, 0.2), true)
