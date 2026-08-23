@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="CellDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cell_def.gd" id="1_1xoe4"]
+[ext_resource type="Resource" path="res://data/skills/macrophage_skill.tres" id="2_21ll2"]
+
+[resource]
+script = ExtResource("1_1xoe4")
+id = &"macrophage"
+display_name = "대식세포"
+role = "전방 제압"
+description = "가까운 박테리아를 붙잡고 전선을 밀어냅니다."
+color = Color(0.15686275, 0.8235294, 0.6392157, 1)
+accent = Color(0.7137255, 1, 0.9137255, 1)
+hp = 150.0
+damage = 13.0
+attack_range = 88.0
+attack_rate = 0.78
+speed = 92.0
+tags = Array[StringName]([&"innate", &"frontline", &"phagocytosis"])
+skill = ExtResource("2_21ll2")
+result_copy = "대식세포는 먼저 달려가 침입자를 붙잡는 선천면역의 전방 방어 역할을 모티브로 했습니다."

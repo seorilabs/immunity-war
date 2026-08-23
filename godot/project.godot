@@ -11,6 +11,13 @@ config/features=PackedStringArray("4.7", "Mobile")
 boot_splash/bg_color=Color(0.0156863, 0.0627451, 0.0588235, 1)
 config/icon="res://icon.svg"
 
+[autoload]
+
+Db="*res://scripts/autoload/db.gd"
+SaveService="*res://scripts/autoload/save_service.gd"
+GameState="*res://scripts/autoload/game_state.gd"
+AudioService="*res://scripts/autoload/audio_service.gd"
+
 [display]
 
 window/size/viewport_width=390

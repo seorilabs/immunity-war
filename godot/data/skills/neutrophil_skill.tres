@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_def.gd" id="1_fhi7u"]
+
+[resource]
+script = ExtResource("1_fhi7u")
+id = &"neutrophil_skill"
+display_name = "염증 폭발"
+description = "전방 범위에 폭발 피해를 줍니다."
+damage = 42.0
+radius = 118.0
+forward_offset = 96.0

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SkillDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/skill_def.gd" id="1_ivv03"]
+
+[resource]
+script = ExtResource("1_ivv03")
+id = &"macrophage_skill"
+display_name = "포식 돌진"
+description = "주변 적을 끌어당기고 짧게 기절시킵니다."
+kind = 0
+cooldown = 7.5
+damage = 16.0
+radius = 145.0
+forward_offset = 58.0
+pull_distance = 64.0
+stun_duration = 1.15

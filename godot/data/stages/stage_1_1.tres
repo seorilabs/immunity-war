@@ -1,0 +1,104 @@
+[gd_resource type="Resource" script_class="StageDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/stage_def.gd" id="1_m6m8x"]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="2_na367"]
+[ext_resource type="Script" path="res://scripts/data/spawn_entry.gd" id="3_mm384"]
+[ext_resource type="Resource" path="res://data/enemies/bacteria_swarm.tres" id="4_nkag3"]
+[ext_resource type="Resource" path="res://data/enemies/fast_bacteria.tres" id="5_o4ifh"]
+[ext_resource type="Resource" path="res://data/enemies/armored_bacteria.tres" id="6_dd0or"]
+
+[sub_resource type="Resource" id="Resource_g7q6n"]
+script = ExtResource("3_mm384")
+time = 0.4
+enemy = ExtResource("4_nkag3")
+count = 4
+spacing = 0.75
+
+[sub_resource type="Resource" id="Resource_860k6"]
+script = ExtResource("3_mm384")
+time = 3.4
+enemy = ExtResource("4_nkag3")
+count = 3
+lane = 0
+
+[sub_resource type="Resource" id="Resource_7bsot"]
+script = ExtResource("3_mm384")
+time = 6.6
+enemy = ExtResource("5_o4ifh")
+count = 2
+spacing = 1.0
+lane = 2
+
+[sub_resource type="Resource" id="Resource_b65p8"]
+script = ExtResource("2_na367")
+display_name = "1차 침투"
+spawns = Array[ExtResource("3_mm384")]([SubResource("Resource_g7q6n"), SubResource("Resource_860k6"), SubResource("Resource_7bsot")])
+
+[sub_resource type="Resource" id="Resource_db27o"]
+script = ExtResource("3_mm384")
+time = 0.4
+enemy = ExtResource("4_nkag3")
+count = 5
+spacing = 0.62
+lane = 2
+
+[sub_resource type="Resource" id="Resource_exhm3"]
+script = ExtResource("3_mm384")
+time = 2.6
+enemy = ExtResource("6_dd0or")
+count = 2
+spacing = 1.8
+
+[sub_resource type="Resource" id="Resource_cmk0g"]
+script = ExtResource("3_mm384")
+time = 6.2
+enemy = ExtResource("5_o4ifh")
+count = 4
+spacing = 0.75
+lane = 0
+
+[sub_resource type="Resource" id="Resource_ostog"]
+script = ExtResource("2_na367")
+display_name = "2차 확산"
+spawns = Array[ExtResource("3_mm384")]([SubResource("Resource_db27o"), SubResource("Resource_exhm3"), SubResource("Resource_cmk0g")])
+
+[sub_resource type="Resource" id="Resource_xxmwu"]
+script = ExtResource("3_mm384")
+time = 0.2
+enemy = ExtResource("6_dd0or")
+count = 3
+spacing = 1.6
+
+[sub_resource type="Resource" id="Resource_nqlt8"]
+script = ExtResource("3_mm384")
+time = 1.8
+enemy = ExtResource("4_nkag3")
+count = 6
+spacing = 0.55
+lane = 0
+
+[sub_resource type="Resource" id="Resource_qxqqc"]
+script = ExtResource("3_mm384")
+time = 4.5
+enemy = ExtResource("5_o4ifh")
+count = 5
+spacing = 0.58
+lane = 2
+
+[sub_resource type="Resource" id="Resource_lb45g"]
+script = ExtResource("3_mm384")
+time = 8.0
+enemy = ExtResource("6_dd0or")
+spacing = 1.0
+lane = 0
+
+[sub_resource type="Resource" id="Resource_qxaar"]
+script = ExtResource("2_na367")
+display_name = "바이오필름 압박"
+spawns = Array[ExtResource("3_mm384")]([SubResource("Resource_xxmwu"), SubResource("Resource_nqlt8"), SubResource("Resource_qxqqc"), SubResource("Resource_lb45g")])
+
+[resource]
+script = ExtResource("1_m6m8x")
+id = &"1-1"
+display_name = "1차 방어전"
+waves = Array[ExtResource("2_na367")]([SubResource("Resource_b65p8"), SubResource("Resource_ostog"), SubResource("Resource_qxaar")])
