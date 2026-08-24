@@ -1,6 +1,7 @@
 class_name BattleHud
 extends Control
 ## 전투 HUD 표시 전용. 컨트롤러 상태를 시그널·update 호출로만 반영한다.
+## 전투 이탈은 2단계 — HUD는 일시정지만 올리고, 포기 확인은 PauseOverlay가 받는다.
 
 signal skill_pressed
 signal reinforce_pressed
@@ -95,17 +96,21 @@ func _ready() -> void:
 	_reinforce_bar.custom_minimum_size = Vector2(0.0, 8.0)
 	reinforce_box.add_child(_reinforce_bar)
 
-	# 전투 이탈은 2단계 — 여기서는 일시정지만 하고, 포기 확인은 오버레이가 받는다.
 	var pause_button := Button.new()
 	pause_button.text = "일시\n정지"
 	pause_button.custom_minimum_size = Vector2(64.0, 54.0)
 	pause_button.pressed.connect(func() -> void: pause_pressed.emit())
 	action_row.add_child(pause_button)
 
-func update_hud(base_hp: float, wave_index: int, wave_total: int, elapsed: float) -> void:
-	_hp_label.text = "체력 " + str(int(round(base_hp)))
+func update_hud(wave_index: int, wave_total: int, elapsed: float) -> void:
 	_wave_label.text = "웨이브 %d/%d" % [wave_index + 1, wave_total]
 	_time_label.text = _format_time(elapsed)
+
+func update_base(base_hp: float, _max_hp: float, shield: float) -> void:
+	var text := "체력 " + str(int(round(base_hp)))
+	if shield > 0.0:
+		text += " ⛨" + str(int(round(shield)))
+	_hp_label.text = text
 
 func update_skill(skill_name: String, cooldown: float, max_cooldown: float) -> void:
 	if cooldown <= 0.0:

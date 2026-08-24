@@ -1,0 +1,112 @@
+[gd_resource type="Resource" script_class="StageDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/stage_def.gd" id="1_23iyx"]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="2_7n3oi"]
+[ext_resource type="Script" path="res://scripts/data/spawn_entry.gd" id="3_js008"]
+[ext_resource type="Resource" path="res://data/enemies/fast_bacteria.tres" id="4_xg1uv"]
+[ext_resource type="Resource" path="res://data/enemies/bacteria_swarm.tres" id="5_ocwcc"]
+[ext_resource type="Resource" path="res://data/enemies/armored_bacteria.tres" id="6_01gm4"]
+
+[sub_resource type="Resource" id="Resource_23iyx"]
+script = ExtResource("3_js008")
+time = 0.3
+enemy = ExtResource("4_xg1uv")
+count = 6
+spacing = 0.5
+
+[sub_resource type="Resource" id="Resource_7n3oi"]
+script = ExtResource("3_js008")
+time = 3.0
+enemy = ExtResource("5_ocwcc")
+count = 4
+spacing = 0.6
+lane = 0
+
+[sub_resource type="Resource" id="Resource_js008"]
+script = ExtResource("2_7n3oi")
+display_name = "1차 침투"
+spawns = Array[ExtResource("3_js008")]([SubResource("Resource_23iyx"), SubResource("Resource_7n3oi")])
+
+[sub_resource type="Resource" id="Resource_xg1uv"]
+script = ExtResource("3_js008")
+time = 0.3
+enemy = ExtResource("4_xg1uv")
+count = 5
+spacing = 0.5
+lane = 2
+
+[sub_resource type="Resource" id="Resource_ocwcc"]
+script = ExtResource("3_js008")
+time = 2.5
+enemy = ExtResource("4_xg1uv")
+count = 5
+spacing = 0.5
+lane = 0
+
+[sub_resource type="Resource" id="Resource_01gm4"]
+script = ExtResource("3_js008")
+time = 5.0
+enemy = ExtResource("5_ocwcc")
+count = 4
+spacing = 0.55
+
+[sub_resource type="Resource" id="Resource_6een7"]
+script = ExtResource("2_7n3oi")
+display_name = "2차 침투"
+spawns = Array[ExtResource("3_js008")]([SubResource("Resource_xg1uv"), SubResource("Resource_ocwcc"), SubResource("Resource_01gm4")])
+
+[sub_resource type="Resource" id="Resource_pyxgd"]
+script = ExtResource("3_js008")
+time = 0.3
+enemy = ExtResource("6_01gm4")
+count = 3
+spacing = 1.4
+
+[sub_resource type="Resource" id="Resource_22p43"]
+script = ExtResource("3_js008")
+time = 2.0
+enemy = ExtResource("4_xg1uv")
+count = 6
+spacing = 0.45
+lane = 2
+
+[sub_resource type="Resource" id="Resource_14mvj"]
+script = ExtResource("2_7n3oi")
+display_name = "3차 침투"
+spawns = Array[ExtResource("3_js008")]([SubResource("Resource_pyxgd"), SubResource("Resource_22p43")])
+
+[sub_resource type="Resource" id="Resource_1ynrn"]
+script = ExtResource("3_js008")
+time = 0.3
+enemy = ExtResource("5_ocwcc")
+count = 8
+spacing = 0.45
+lane = 0
+
+[sub_resource type="Resource" id="Resource_8sf4f"]
+script = ExtResource("3_js008")
+time = 3.0
+enemy = ExtResource("6_01gm4")
+count = 3
+spacing = 1.3
+
+[sub_resource type="Resource" id="Resource_jccnl"]
+script = ExtResource("3_js008")
+time = 6.0
+enemy = ExtResource("4_xg1uv")
+count = 6
+spacing = 0.45
+lane = 2
+
+[sub_resource type="Resource" id="Resource_pq6in"]
+script = ExtResource("2_7n3oi")
+display_name = "4차 침투"
+spawns = Array[ExtResource("3_js008")]([SubResource("Resource_1ynrn"), SubResource("Resource_8sf4f"), SubResource("Resource_jccnl")])
+
+[resource]
+script = ExtResource("1_23iyx")
+id = &"1-5"
+display_name = "침투 가속"
+order = 5
+hp_mult = 1.2
+waves = Array[ExtResource("2_7n3oi")]([SubResource("Resource_js008"), SubResource("Resource_6een7"), SubResource("Resource_14mvj"), SubResource("Resource_pq6in")])

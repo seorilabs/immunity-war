@@ -48,17 +48,22 @@ static func run(host: Node) -> PackedStringArray:
 	if bar != null and absf(float(bar.value) - 1.0) > EPSILON:
 		failures.append("가득 찬 게이지 바 값 불일치: %s" % str(bar.value))
 
-	# 탭 → 실제 증원 투입
+	# 탭 → 실제 증원 발동 (예비 세포 소환 또는 예비가 없으면 기지 회복 — 02-gdd 3.5)
+	controller.damage_base(30.0)
 	var cells_before := controller.registry.cells.size()
+	var hp_before := controller.base_hp
 	button.pressed.emit()
 	if not is_equal_approx(controller.reinforce_gauge, 0.0):
 		failures.append("증원 버튼 탭이 게이지를 소모하지 않음: %s" % controller.reinforce_gauge)
-	if controller.registry.cells.size() != cells_before + 1:
-		failures.append("증원 버튼 탭이 임시 세포를 소환하지 않음")
+	var summoned := controller.registry.cells.size() == cells_before + 1
+	var healed := controller.base_hp > hp_before
+	if not summoned and not healed:
+		failures.append("증원 버튼 탭이 소환도 회복도 하지 않음")
 	scene._process(0.0)
 	if not button.disabled:
 		failures.append("증원 직후 버튼이 다시 비활성화되지 않음")
 
+	GameState.clear_run()
 	_teardown(host, scene)
 	return failures
 

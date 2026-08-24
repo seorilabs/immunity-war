@@ -79,7 +79,7 @@ static func _check_win_run(failures: PackedStringArray, host: Node) -> void:
 		_teardown(host, world)
 		return
 
-	var wave_total := controller.stage.waves.size()
+	var wave_total := controller.stage().waves.size()
 	var names := port.names()
 
 	# 순서: level_start 가 맨 앞, level_end 가 맨 뒤
@@ -179,10 +179,13 @@ static func _expect_keys(failures: PackedStringArray, label: String, params: Dic
 			failures.append("%s 파라미터 누락: %s (%s)" % [label, key, str(params.keys())])
 
 static func _controller(world: Node2D) -> BattleController:
-	var roster: Array[CellDef] = [Db.cell(&"macrophage")]
+	var config := BattleConfig.new()
+	config.stage = Db.stage(&"1-1")
+	config.rng_seed = 12345
+	config.roster = [Db.cell(&"macrophage")]
 	for teammate_id in Db.teammate_ids(&"macrophage"):
-		roster.append(Db.cell(teammate_id))
-	return BattleController.new(Db.stage(&"1-1"), roster, world, Vector2(390.0, 844.0), 12345)
+		config.roster.append(Db.cell(teammate_id))
+	return BattleController.new(config, world)
 
 static func _teardown(host: Node, world: Node2D) -> void:
 	host.remove_child(world)

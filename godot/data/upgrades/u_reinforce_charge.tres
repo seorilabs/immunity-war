@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_i1kom"]
+
+[resource]
+script = ExtResource("1_i1kom")
+id = &"u_reinforce_charge"
+display_name = "골수 동원"
+description = "증원 게이지 충전 +25%"
+effect_kind = 5
+value = 0.25

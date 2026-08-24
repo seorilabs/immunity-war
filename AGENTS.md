@@ -40,5 +40,5 @@
 
 ## Git / PR
 
-- 브랜치 + PR 흐름. PR 제목/Description은 한글 (고유명사·코드·에러는 원문 유지).
-- PR 운영은 `seori-pr-workflow` 스킬을 따른다.
+- main 직접 push 허용 (사용자 지시 2026-08-23 "굳이 PR 안해도 되는데 바로 메인에 병합해"). 단 push 전 로컬 quality gate + balance_sim 통과가 필수다.
+- PR을 쓰는 경우(대규모 리뷰 필요 시) 제목/Description은 한글, 운영은 `seori-pr-workflow` 스킬을 따른다.

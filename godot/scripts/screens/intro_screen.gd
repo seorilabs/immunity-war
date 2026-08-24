@@ -1,5 +1,10 @@
 extends ScreenBase
 
+var _args: Dictionary = {}
+
+func setup(args: Dictionary) -> void:
+	_args = args
+
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_add_background(UiStyle.BG_DEEP)
@@ -21,4 +26,4 @@ func _ready() -> void:
 
 	await get_tree().create_timer(1.9).timeout
 	if is_inside_tree():
-		go(&"cell_select")
+		go(&"battle", _args)

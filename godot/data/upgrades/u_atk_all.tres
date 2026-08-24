@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_8dgqg"]
+
+[resource]
+script = ExtResource("1_8dgqg")
+id = &"u_atk_all"
+display_name = "면역 활성화"
+description = "모든 세포 공격력 +10%"
+value = 0.1

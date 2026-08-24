@@ -30,8 +30,10 @@ func _notification(what: int) -> void:
 
 func load_data() -> void:
 	var loaded := _read_and_parse(save_path)
-	if loaded.is_empty() and FileAccess.file_exists(save_path):
-		save_error.emit("parse")
+	if loaded.is_empty():
+		# 이슈 #15: 파일 손상뿐 아니라 파일 소실 시에도 .bak 폴백을 시도한다.
+		if FileAccess.file_exists(save_path):
+			save_error.emit("parse")
 		loaded = _read_and_parse(backup_path)
 		if not loaded.is_empty():
 			save_error.emit("recovered_from_backup")

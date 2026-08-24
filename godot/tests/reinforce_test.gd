@@ -22,10 +22,13 @@ static func _check_gauge_and_summon(failures: PackedStringArray, host: Node) -> 
 	var world := Node2D.new()
 	host.add_child(world)
 
-	var roster: Array[CellDef] = [Db.cell(&"macrophage")]
-	for teammate_id in Db.teammate_ids(&"macrophage"):
-		roster.append(Db.cell(teammate_id))
-	var controller := BattleController.new(Db.stage(&"1-1"), roster, world, Vector2(390.0, 844.0), 12345)
+	# 덱 = 리더 + 동료 1, 예비 = b_cell → 증원은 예비 세포를 소환한다 (02-gdd 3.5 "덱 외 대기 세포").
+	var config := BattleConfig.new()
+	config.stage = Db.stage(&"1-1")
+	config.rng_seed = 12345
+	config.roster = [Db.cell(&"macrophage"), Db.cell(&"neutrophil")]
+	config.reserve_cells = [Db.cell(&"b_cell")]
+	var controller := BattleController.new(config, world)
 	controller.start()
 	var base_cell_count := controller.registry.cells.size()
 
@@ -62,8 +65,8 @@ static func _check_gauge_and_summon(failures: PackedStringArray, host: Node) -> 
 		failures.append("임시 세포가 리더 표식을 가짐: %s" % summoned.def.id)
 	if not summoned.is_temporary:
 		failures.append("임시 세포가 임시 표시를 갖지 않음: %s" % summoned.def.id)
-	if summoned.def.id == roster[0].id:
-		failures.append("증원이 리더와 같은 세포로 소환됨: %s" % summoned.def.id)
+	if summoned.def.id != &"b_cell":
+		failures.append("증원이 예비 세포가 아닌 것을 소환함: %s" % summoned.def.id)
 
 	# CON-004: 15초 뒤 자연 퇴장 (그 전에는 남아 있어야 한다)
 	_advance(controller, BattleController.REINFORCE_DURATION - 1.0)
@@ -74,6 +77,19 @@ static func _check_gauge_and_summon(failures: PackedStringArray, host: Node) -> 
 		failures.append("증원 세포가 15초 후에도 남아 있음 (남은 시간 %.2fs)" % summoned.remaining_lifetime)
 	if is_instance_valid(summoned) and not summoned.is_queued_for_deletion():
 		failures.append("증원 세포 노드가 해제되지 않음")
+
+	# CON-005 대체 경로: 예비 세포가 없으면 기지를 회복한다
+	controller.config.reserve_cells = []
+	controller.damage_base(40.0)
+	var damaged_hp := controller.base_hp
+	var cells_before_heal := controller.registry.cells.size()
+	controller.reinforce_gauge = BattleController.REINFORCE_MAX
+	if not controller.call_reinforcement():
+		failures.append("예비 없음 증원(회복 경로)이 거부됨")
+	if controller.registry.cells.size() != cells_before_heal:
+		failures.append("예비 없음 증원이 세포를 소환함")
+	if not is_equal_approx(controller.base_hp, minf(controller.max_base_hp, damaged_hp + BattleController.REINFORCE_BASE_HEAL)):
+		failures.append("예비 없음 증원의 기지 회복량 불일치: %s → %s" % [damaged_hp, controller.base_hp])
 
 	# 전투 종료 후에는 증원이 동작하지 않는다
 	controller.reinforce_gauge = BattleController.REINFORCE_MAX

@@ -67,7 +67,7 @@ static func _check_guards(failures: PackedStringArray, host: Node) -> void:
 
 	# 강화 3택 중에는 일시정지 진입 불가 (03-ui-ux-spec.md:35 — 이미 정지 상태)
 	var steps := 0
-	while controller.state == BattleController.State.RUNNING and steps < 20000:
+	while (controller.state == BattleController.State.RUNNING or controller.state == BattleController.State.BETWEEN_WAVES) and steps < 20000:
 		controller.step(FIXED_DELTA)
 		if controller.can_use_skill():
 			controller.use_leader_skill()
@@ -103,10 +103,13 @@ static func _check_guards(failures: PackedStringArray, host: Node) -> void:
 	_teardown(host, world)
 
 static func _controller(world: Node2D) -> BattleController:
-	var roster: Array[CellDef] = [Db.cell(&"macrophage")]
+	var config := BattleConfig.new()
+	config.stage = Db.stage(&"1-1")
+	config.rng_seed = 12345
+	config.roster = [Db.cell(&"macrophage")]
 	for teammate_id in Db.teammate_ids(&"macrophage"):
-		roster.append(Db.cell(teammate_id))
-	return BattleController.new(Db.stage(&"1-1"), roster, world, Vector2(390.0, 844.0), 12345)
+		config.roster.append(Db.cell(teammate_id))
+	return BattleController.new(config, world)
 
 static func _snapshot(controller: BattleController) -> Dictionary:
 	var positions := PackedVector2Array()
