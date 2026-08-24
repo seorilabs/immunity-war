@@ -26,7 +26,7 @@ func step(delta: float) -> void:
 	if stun_timer > 0.0:
 		stun_timer -= delta
 	else:
-		position.x -= def.speed * delta
+		position.x -= def.speed * controller.run_upgrades.enemy_speed_mult * delta
 		position.y += sin(Time.get_ticks_msec() * 0.006 + wobble_seed) * 2.4 * delta
 
 	if position.x <= ArenaLayout.BASE_X:
@@ -41,7 +41,16 @@ func step(delta: float) -> void:
 func take_damage(amount: float, source_cell_id: StringName = &"") -> void:
 	if not alive:
 		return
-	hp -= CombatRules.final_damage(amount, _attacker_tags(source_cell_id), def.tags, mark_timer > 0.0)
+	var attacker_tags := _attacker_tags(source_cell_id)
+	hp -= CombatRules.final_damage(
+		amount,
+		attacker_tags,
+		def.tags,
+		mark_timer > 0.0,
+		controller.run_upgrades.damage_mult_for(attacker_tags),
+		1.0,
+		controller.run_upgrades.mark_bonus
+	)
 	flash_timer = 0.12
 	if hp <= 0.0:
 		alive = false

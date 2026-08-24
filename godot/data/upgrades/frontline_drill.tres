@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_2da80"]
+
+[resource]
+script = ExtResource("1_2da80")
+id = &"frontline_drill"
+display_name = "전선 훈련"
+description = "frontline 세포 피해 +25%"
+rarity = 1
+effect_kind = 0
+target_tag = &"frontline"
+value = 0.25

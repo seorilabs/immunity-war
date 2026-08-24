@@ -1,6 +1,6 @@
 extends Node
 ## 헤드리스 밸런스 시뮬: 리더 3종 각각 스테이지 1-1을 고정 시드·고정 델타로 완주시킨다.
-## 스킬은 쿨다운이 돌 때마다 즉시 사용하는 그리디 정책.
+## 스킬은 쿨다운이 돌 때마다 즉시 사용하는 그리디 정책, 강화 3택은 항상 첫 카드를 고르는 고정 정책.
 
 const FIXED_DELTA := 1.0 / 30.0
 const MAX_STEPS := 40000
@@ -41,6 +41,8 @@ func _run_battle(leader_id: StringName) -> Dictionary:
 	var steps := 0
 	while _summary.is_empty() and steps < MAX_STEPS:
 		controller.step(FIXED_DELTA)
+		if controller.state == BattleController.State.CHOOSING_UPGRADE:
+			controller.choose_upgrade(0)
 		if controller.can_use_skill():
 			controller.use_leader_skill()
 		steps += 1

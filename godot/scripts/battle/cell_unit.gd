@@ -27,7 +27,7 @@ func step(delta: float) -> void:
 		if position.distance_to(target.position) <= def.attack_range:
 			desired = position
 			if fire_timer <= 0.0:
-				fire_timer = def.attack_rate
+				fire_timer = def.attack_rate * controller.run_upgrades.attack_rate_mult
 				controller.fire_projectile(self, target, def.damage, def.accent)
 
 	position = position.move_toward(ArenaLayout.clamp_to_arena(controller.arena_size, desired), def.speed * delta)
