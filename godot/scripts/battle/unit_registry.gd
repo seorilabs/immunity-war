@@ -35,7 +35,15 @@ func alive_enemies() -> Array[EnemyUnit]:
 			result.append(enemy)
 	return result
 
+func alive_cells() -> Array[CellUnit]:
+	var result: Array[CellUnit] = []
+	for cell in cells:
+		if is_instance_valid(cell) and not cell.is_queued_for_deletion():
+			result.append(cell)
+	return result
+
 func prune() -> void:
+	cells = alive_cells()
 	enemies = alive_enemies()
 	var alive_projectiles: Array[Projectile] = []
 	for projectile in projectiles:

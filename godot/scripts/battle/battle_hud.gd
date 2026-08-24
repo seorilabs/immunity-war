@@ -3,6 +3,7 @@ extends Control
 ## 전투 HUD 표시 전용. 컨트롤러 상태를 시그널·update 호출로만 반영한다.
 
 signal skill_pressed
+signal reinforce_pressed
 signal retreat_pressed
 
 var _hp_label: Label
@@ -11,6 +12,8 @@ var _time_label: Label
 var _status_label: Label
 var _skill_button: Button
 var _cooldown_bar: ProgressBar
+var _reinforce_button: Button
+var _reinforce_bar: ProgressBar
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -73,6 +76,25 @@ func _ready() -> void:
 	_cooldown_bar.custom_minimum_size = Vector2(0.0, 8.0)
 	skill_box.add_child(_cooldown_bar)
 
+	var reinforce_box := VBoxContainer.new()
+	reinforce_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_row.add_child(reinforce_box)
+
+	_reinforce_button = Button.new()
+	_reinforce_button.text = "증원"
+	_reinforce_button.custom_minimum_size = Vector2(64.0, 54.0)
+	_reinforce_button.disabled = true
+	_reinforce_button.pressed.connect(func() -> void: reinforce_pressed.emit())
+	reinforce_box.add_child(_reinforce_button)
+
+	_reinforce_bar = ProgressBar.new()
+	_reinforce_bar.show_percentage = false
+	_reinforce_bar.min_value = 0.0
+	_reinforce_bar.max_value = 1.0
+	_reinforce_bar.value = 0.0
+	_reinforce_bar.custom_minimum_size = Vector2(0.0, 8.0)
+	reinforce_box.add_child(_reinforce_bar)
+
 	var retreat_button := Button.new()
 	retreat_button.text = "철수"
 	retreat_button.custom_minimum_size = Vector2(74.0, 54.0)
@@ -92,6 +114,15 @@ func update_skill(skill_name: String, cooldown: float, max_cooldown: float) -> v
 		_skill_button.text = "%s %d초" % [skill_name, int(ceil(cooldown))]
 		_skill_button.disabled = true
 	_cooldown_bar.value = 1.0 - cooldown / maxf(max_cooldown, 0.01)
+
+## CON-003 게이지 표시. 가득 찼을 때만 버튼이 활성화된다.
+func update_reinforce(gauge: float, gauge_max: float, ready: bool) -> void:
+	_reinforce_bar.value = clampf(gauge / maxf(gauge_max, 0.01), 0.0, 1.0)
+	_reinforce_button.disabled = not ready
+	if ready:
+		_reinforce_button.text = "증원 투입"
+	else:
+		_reinforce_button.text = "증원 %d%%" % int(floor(gauge / maxf(gauge_max, 0.01) * 100.0))
 
 func set_status(text: String) -> void:
 	_status_label.text = text
