@@ -1,12 +1,45 @@
 class_name CombatRules
-## 피해·위협도 계산의 단일 경로. 상성·강화·레벨 배율은 Phase 2에서 이 경로에 합류한다.
+## 피해·위협도 계산의 단일 경로. GDD `docs/game-design/02-gdd.md` 피해 계산 규격을 소유한다.
+##
+## final_damage = base_damage x mark_mult x type_mult x upgrade_mult x level_mult
 
 const MARK_MULT := 1.45
 
-static func final_damage(base_damage: float, marked: bool) -> float:
+## 공격 태그 x 방어 태그 상성표 (02-gdd.md 상성표).
+## 표에 없는 공격 태그(support 계열)는 전 행 1.0으로 취급한다.
+const TYPE_MULT := {
+	&"phagocytosis": {&"swarm": 1.4, &"armored": 0.8, &"fast": 1.0, &"toxin": 1.0, &"biofilm": 0.8},
+	&"inflammatory": {&"swarm": 1.3, &"armored": 1.0, &"fast": 1.0, &"toxin": 1.2, &"biofilm": 0.8},
+	&"antibody": {&"swarm": 1.0, &"armored": 1.2, &"fast": 1.3, &"toxin": 1.0, &"biofilm": 1.0},
+	&"lytic": {&"swarm": 0.7, &"armored": 1.5, &"fast": 1.0, &"toxin": 1.0, &"biofilm": 1.3},
+}
+
+## 태그 배열은 canonical 순서(로스터 정의 순)를 따르며, 표에 먼저 걸리는 공격 태그 한 행만 적용한다.
+static func type_mult(attacker_tags: Array[StringName], defender_tags: Array[StringName]) -> float:
+	for attacker_tag in attacker_tags:
+		if not TYPE_MULT.has(attacker_tag):
+			continue
+		var row: Dictionary = TYPE_MULT[attacker_tag]
+		for defender_tag in defender_tags:
+			if row.has(defender_tag):
+				return float(row[defender_tag])
+		return 1.0
+	return 1.0
+
+static func final_damage(
+	base_damage: float,
+	attacker_tags: Array[StringName],
+	defender_tags: Array[StringName],
+	marked: bool,
+	upgrade_mult: float = 1.0,
+	level_mult: float = 1.0
+) -> float:
 	var damage := base_damage
 	if marked:
 		damage *= MARK_MULT
+	damage *= type_mult(attacker_tags, defender_tags)
+	damage *= upgrade_mult
+	damage *= level_mult
 	return damage
 
 static func threat_score(hp: float, position_x: float, base_damage: float) -> float:
