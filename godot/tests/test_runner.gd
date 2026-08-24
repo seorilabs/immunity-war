@@ -1,10 +1,11 @@
 extends Node
-## 헤드리스 스모크: main_scene 존재, Db 무결성, CombatRules test vector, 강화 3택, SaveService 라운드트립·손상 폴백.
+## 헤드리스 스모크: main_scene 존재, Db 무결성, CombatRules test vector, 강화 3택, 증원 게이지, SaveService 라운드트립·손상 폴백.
 
 const SaveServiceScript := preload("res://scripts/autoload/save_service.gd")
 const CombatRulesTest := preload("res://tests/combat_rules_test.gd")
 const UpgradePoolTest := preload("res://tests/upgrade_pool_test.gd")
 const UpgradeOverlayTest := preload("res://tests/upgrade_overlay_test.gd")
+const ReinforceTest := preload("res://tests/reinforce_test.gd")
 
 var _failures: PackedStringArray = []
 
@@ -13,6 +14,7 @@ func _ready() -> void:
 	_check_db()
 	_check_combat_rules()
 	_check_upgrades()
+	_check_reinforce()
 	await _check_save_roundtrip()
 	await _check_save_corruption_fallback()
 
@@ -52,6 +54,10 @@ func _check_upgrades() -> void:
 		_fail("강화 3택: " + message)
 	for message in UpgradeOverlayTest.run(self):
 		_fail("강화 오버레이: " + message)
+
+func _check_reinforce() -> void:
+	for message in ReinforceTest.run(self):
+		_fail("증원 게이지: " + message)
 
 func _check_save_roundtrip() -> void:
 	var svc := _isolated_save_service("test_save.json")

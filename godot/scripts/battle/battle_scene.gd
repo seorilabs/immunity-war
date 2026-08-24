@@ -39,6 +39,7 @@ func _ready() -> void:
 	_controller.battle_finished.connect(_on_battle_finished)
 	_controller.upgrade_offered.connect(_show_upgrade_overlay)
 	_hud.skill_pressed.connect(func() -> void: _controller.use_leader_skill())
+	_hud.reinforce_pressed.connect(func() -> void: _controller.call_reinforcement())
 	_hud.retreat_pressed.connect(func() -> void: _controller.retreat())
 	_controller.start()
 
@@ -48,6 +49,7 @@ func _process(delta: float) -> void:
 	_controller.step(delta)
 	_hud.update_hud(_controller.base_hp, _controller.wave_index, _controller.stage.waves.size(), _controller.elapsed)
 	_hud.update_skill(_controller.skill().display_name, _controller.skill_cooldown, _controller.skill().cooldown)
+	_hud.update_reinforce(_controller.reinforce_gauge, BattleController.REINFORCE_MAX, _controller.can_reinforce())
 
 func _show_upgrade_overlay(choices: Array[UpgradeDef]) -> void:
 	if is_instance_valid(_upgrade_overlay):

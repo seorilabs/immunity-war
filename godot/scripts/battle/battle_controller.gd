@@ -9,8 +9,14 @@ signal fx_requested(kind: String, world_pos: Vector2, radius: float, color: Colo
 signal battle_finished(summary: Dictionary)
 signal upgrade_offered(choices: Array[UpgradeDef])
 signal upgrade_chosen(upgrade: UpgradeDef)
+signal reinforcement_called(cell_def: CellDef)
 
 enum State {RUNNING, CHOOSING_UPGRADE, FINISHED}
+
+## CON-003 증원 게이지: 처치당 8, 최대 100. CON-004 증원 지속: 15s.
+const REINFORCE_GAIN_PER_KILL := 8.0
+const REINFORCE_MAX := 100.0
+const REINFORCE_DURATION := 15.0
 
 var stage: StageDef
 var roster: Array[CellDef] = []
@@ -30,6 +36,8 @@ var wave_index := -1
 var wave_elapsed := 0.0
 var defeated_count := 0
 var skill_cooldown := 0.0
+var reinforce_gauge := 0.0
+var reinforce_count := 0
 var run_upgrades := RunUpgrades.new()
 var upgrade_choices: Array[UpgradeDef] = []
 
@@ -90,6 +98,46 @@ func use_leader_skill() -> void:
 	status_changed.emit(leader_skill.display_name)
 	SkillSystem.execute(leader_skill, self)
 
+func can_reinforce() -> bool:
+	return state == State.RUNNING and reinforce_gauge >= REINFORCE_MAX
+
+## 게이지를 소모하고 임시 세포 1기를 투입한다 (CON-004: 15초 후 자연 퇴장).
+func call_reinforcement() -> bool:
+	if not can_reinforce():
+		return false
+	var cell_def := _reinforcement_def()
+	if cell_def == null:
+		return false
+	reinforce_gauge = 0.0
+	reinforce_count += 1
+
+	var cell := CellUnit.new()
+	# 기존 진영 슬롯을 순환하되 살짝 뒤로 물려 배치가 완전히 겹치지 않게 한다.
+	var slot := (roster.size() + reinforce_count) % 3
+	var home := ArenaLayout.cell_home(arena_size, slot) - Vector2(16.0, 0.0)
+	cell.configure(cell_def, false, self, ArenaLayout.clamp_to_arena(arena_size, home))
+	cell.make_temporary(REINFORCE_DURATION)
+	world.add_child(cell)
+	registry.cells.append(cell)
+
+	status_changed.emit("증원 도착: " + cell_def.display_name)
+	request_fx("ring", cell.position, 46.0, cell_def.accent, 0.5)
+	reinforcement_called.emit(cell_def)
+	return true
+
+func on_reinforcement_expired(cell: CellUnit) -> void:
+	request_fx("ring", cell.position, 38.0, cell.def.color, 0.4)
+
+## 리더가 아닌 세포 중에서 순환 선택한다 (시드 고정 시 결정론).
+func _reinforcement_def() -> CellDef:
+	var candidates: Array[CellDef] = []
+	for cell_def in roster:
+		if cell_def != null and cell_def.id != roster[0].id:
+			candidates.append(cell_def)
+	if candidates.is_empty():
+		return null
+	return candidates[(reinforce_count) % candidates.size()]
+
 func fire_projectile(source: CellUnit, target: EnemyUnit, damage: float, color: Color) -> void:
 	if not is_instance_valid(target):
 		return
@@ -106,6 +154,7 @@ func on_base_reached(enemy: EnemyUnit) -> void:
 func on_enemy_defeated(enemy: EnemyUnit) -> void:
 	defeated_count += 1
 	request_fx("ring", enemy.position, enemy.def.radius * 2.0, enemy.def.color, 0.34)
+	reinforce_gauge = minf(REINFORCE_MAX, reinforce_gauge + REINFORCE_GAIN_PER_KILL)
 	heal_base(run_upgrades.on_kill_heal)
 
 func damage_base(amount: float) -> void:
