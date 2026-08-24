@@ -33,10 +33,29 @@ class MockPort extends AnalyticsPort:
 
 static func run(host: Node) -> PackedStringArray:
 	var failures := PackedStringArray()
+	_check_port_surface(failures)
 	_check_win_run(failures, host)
 	_check_give_up_run(failures, host)
 	_check_default_port_is_noop(failures)
 	return failures
+
+## 포트는 track() 하나만 노출하고, 이벤트 이름·파라미터 키는 전부 상수로 정의돼 있어야 한다.
+static func _check_port_surface(failures: PackedStringArray) -> void:
+	var port := AnalyticsPort.new()
+	var declared: Array[String] = []
+	for method in port.get_script().get_script_method_list():
+		declared.append(String(method["name"]))
+	if declared.size() != 1 or declared[0] != "track":
+		failures.append("포트가 track() 외의 메서드를 노출: %s" % str(declared))
+
+	var constants: Dictionary = port.get_script().get_script_constant_map()
+	for name: String in [
+		AnalyticsPort.EVENT_LEVEL_START, AnalyticsPort.EVENT_WAVE_REACHED,
+		AnalyticsPort.EVENT_SKILL_USED, AnalyticsPort.EVENT_LEVEL_END,
+		AnalyticsPort.EVENT_UPGRADE_PICKED, AnalyticsPort.EVENT_REINFORCE_USED,
+	]:
+		if not constants.values().has(name):
+			failures.append("이벤트 이름 상수 누락: %s" % name)
 
 static func _check_win_run(failures: PackedStringArray, host: Node) -> void:
 	var world := Node2D.new()
@@ -88,6 +107,15 @@ static func _check_win_run(failures: PackedStringArray, host: Node) -> void:
 	for wave in range(1, wave_total + 1):
 		if not seen_waves.has(wave):
 			failures.append("wave_reached 에 웨이브 %d 누락: %s" % [wave, str(seen_waves)])
+
+	# 발화한 모든 이벤트 이름·파라미터 키가 상수 목록 안에 있어야 한다 — 호출부 리터럴 유입 차단.
+	var constants: Array = AnalyticsPort.new().get_script().get_script_constant_map().values()
+	for event in port.events:
+		if not constants.has(String(event["name"])):
+			failures.append("상수로 정의되지 않은 이벤트 이름이 발화: %s" % str(event["name"]))
+		for key: String in (event["params"] as Dictionary).keys():
+			if not constants.has(key):
+				failures.append("상수로 정의되지 않은 파라미터 키: %s (%s)" % [key, str(event["name"])])
 
 	_expect_keys(failures, "level_start", port.first(AnalyticsPort.EVENT_LEVEL_START),
 		[AnalyticsPort.PARAM_LEADER_ID, AnalyticsPort.PARAM_STAGE_ID])
