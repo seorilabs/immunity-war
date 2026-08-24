@@ -11,6 +11,16 @@ const _ENEMY_RES := [
 	preload("res://data/enemies/armored_bacteria.tres"),
 	preload("res://data/enemies/fast_bacteria.tres"),
 ]
+const _UPGRADE_RES := [
+	preload("res://data/upgrades/cytokine_burst.tres"),
+	preload("res://data/upgrades/rapid_response.tres"),
+	preload("res://data/upgrades/opsonin_boost.tres"),
+	preload("res://data/upgrades/signal_relay.tres"),
+	preload("res://data/upgrades/tissue_repair.tres"),
+	preload("res://data/upgrades/phagocytic_feast.tres"),
+	preload("res://data/upgrades/mucus_trap.tres"),
+	preload("res://data/upgrades/frontline_drill.tres"),
+]
 const _STAGE_RES := [
 	preload("res://data/stages/stage_1_1.tres"),
 ]
@@ -18,7 +28,9 @@ const _STAGE_RES := [
 var cells: Dictionary = {}
 var enemies: Dictionary = {}
 var stages: Dictionary = {}
+var upgrades: Dictionary = {}
 var cell_order: Array[StringName] = []
+var upgrade_order: Array[StringName] = []
 
 func _ready() -> void:
 	var errors := validate_and_index()
@@ -31,7 +43,9 @@ func validate_and_index() -> PackedStringArray:
 	cells.clear()
 	enemies.clear()
 	stages.clear()
+	upgrades.clear()
 	cell_order.clear()
+	upgrade_order.clear()
 
 	for res: Resource in _CELL_RES:
 		var cell := res as CellDef
@@ -57,6 +71,20 @@ func validate_and_index() -> PackedStringArray:
 		if enemies.has(enemy.id):
 			errors.append("중복 enemy id: %s" % enemy.id)
 		enemies[enemy.id] = enemy
+
+	for res: Resource in _UPGRADE_RES:
+		var upgrade := res as UpgradeDef
+		if upgrade == null:
+			errors.append("UpgradeDef 캐스트 실패: %s" % res.resource_path)
+			continue
+		if upgrade.id == &"":
+			errors.append("빈 upgrade id: %s" % upgrade.resource_path)
+		if upgrades.has(upgrade.id):
+			errors.append("중복 upgrade id: %s" % upgrade.id)
+		if not RunUpgrades.SUPPORTED_KINDS.has(upgrade.effect_kind):
+			errors.append("미구현 effect_kind 강화: %s (%d)" % [upgrade.id, upgrade.effect_kind])
+		upgrades[upgrade.id] = upgrade
+		upgrade_order.append(upgrade.id)
 
 	for res: Resource in _STAGE_RES:
 		var stage := res as StageDef
@@ -85,6 +113,9 @@ func cell(id: StringName) -> CellDef:
 
 func enemy(id: StringName) -> EnemyDef:
 	return enemies.get(id)
+
+func upgrade(id: StringName) -> UpgradeDef:
+	return upgrades.get(id)
 
 func stage(id: StringName) -> StageDef:
 	return stages.get(id)

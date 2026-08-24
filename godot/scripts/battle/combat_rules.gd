@@ -3,6 +3,7 @@ class_name CombatRules
 ##
 ## final_damage = base_damage x mark_mult x type_mult x upgrade_mult x level_mult
 
+## CON-002 표식 기본 배율. 런 강화(UpgradeDef MARK_BONUS)는 이 값에 가산된다.
 const MARK_MULT := 1.45
 
 ## 공격 태그 x 방어 태그 상성표 (02-gdd.md 상성표).
@@ -32,11 +33,12 @@ static func final_damage(
 	defender_tags: Array[StringName],
 	marked: bool,
 	upgrade_mult: float = 1.0,
-	level_mult: float = 1.0
+	level_mult: float = 1.0,
+	mark_bonus: float = 0.0
 ) -> float:
 	var damage := base_damage
 	if marked:
-		damage *= MARK_MULT
+		damage *= MARK_MULT + mark_bonus
 	damage *= type_mult(attacker_tags, defender_tags)
 	damage *= upgrade_mult
 	damage *= level_mult

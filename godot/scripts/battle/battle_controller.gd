@@ -7,15 +7,16 @@ signal status_changed(text: String)
 signal base_changed(hp: float, max_hp: float)
 signal fx_requested(kind: String, world_pos: Vector2, radius: float, color: Color, lifetime: float)
 signal battle_finished(summary: Dictionary)
+signal upgrade_offered(choices: Array[UpgradeDef])
+signal upgrade_chosen(upgrade: UpgradeDef)
 
-enum State {RUNNING, BETWEEN_WAVES, FINISHED}
-
-const BETWEEN_WAVE_DELAY := 1.4
+enum State {RUNNING, CHOOSING_UPGRADE, FINISHED}
 
 var stage: StageDef
 var roster: Array[CellDef] = []
 var world: Node2D
 var arena_size := Vector2(390.0, 844.0)
+var battle_seed := 0
 var rng := RandomNumberGenerator.new()
 var registry := UnitRegistry.new()
 var spawner := WaveSpawner.new()
@@ -27,15 +28,17 @@ var max_base_hp := 120.0
 var elapsed := 0.0
 var wave_index := -1
 var wave_elapsed := 0.0
-var between_timer := 0.0
 var defeated_count := 0
 var skill_cooldown := 0.0
+var run_upgrades := RunUpgrades.new()
+var upgrade_choices: Array[UpgradeDef] = []
 
 func _init(new_stage: StageDef, new_roster: Array[CellDef], new_world: Node2D, new_arena_size: Vector2, seed_value: int) -> void:
 	stage = new_stage
 	roster = new_roster
 	world = new_world
 	arena_size = new_arena_size
+	battle_seed = seed_value
 	rng.seed = seed_value
 
 func start() -> void:
@@ -44,17 +47,17 @@ func start() -> void:
 	_spawn_cells()
 	_start_wave(0)
 
+## CHOOSING_UPGRADE 동안에는 스폰·유닛·타이머가 전부 멈춘다 (GDD 02-gdd.md:51 "선택 전 대기").
 func step(delta: float) -> void:
-	if state == State.FINISHED:
+	if state != State.RUNNING:
 		return
 
 	elapsed += delta
 	skill_cooldown = maxf(0.0, skill_cooldown - delta)
 
-	if state == State.RUNNING:
-		wave_elapsed += delta
-		for event in spawner.pop_due(wave_elapsed):
-			_spawn_enemy(event)
+	wave_elapsed += delta
+	for event in spawner.pop_due(wave_elapsed):
+		_spawn_enemy(event)
 
 	for cell in registry.cells:
 		if is_instance_valid(cell):
@@ -67,18 +70,11 @@ func step(delta: float) -> void:
 			projectile.step(delta)
 	registry.prune()
 
-	if state == State.RUNNING:
-		if spawner.is_exhausted() and registry.enemies.is_empty():
-			if wave_index >= stage.waves.size() - 1:
-				finish(true, "방어 성공")
-			else:
-				state = State.BETWEEN_WAVES
-				between_timer = BETWEEN_WAVE_DELAY
-				status_changed.emit("다음 침투를 감지 중")
-	elif state == State.BETWEEN_WAVES:
-		between_timer -= delta
-		if between_timer <= 0.0:
-			_start_wave(wave_index + 1)
+	if spawner.is_exhausted() and registry.enemies.is_empty():
+		if wave_index >= stage.waves.size() - 1:
+			finish(true, "방어 성공")
+		else:
+			_offer_upgrades()
 
 func skill() -> SkillDef:
 	return roster[0].skill
@@ -90,7 +86,7 @@ func use_leader_skill() -> void:
 	if not can_use_skill():
 		return
 	var leader_skill := skill()
-	skill_cooldown = leader_skill.cooldown
+	skill_cooldown = leader_skill.cooldown * run_upgrades.skill_cooldown_mult
 	status_changed.emit(leader_skill.display_name)
 	SkillSystem.execute(leader_skill, self)
 
@@ -110,6 +106,7 @@ func on_base_reached(enemy: EnemyUnit) -> void:
 func on_enemy_defeated(enemy: EnemyUnit) -> void:
 	defeated_count += 1
 	request_fx("ring", enemy.position, enemy.def.radius * 2.0, enemy.def.color, 0.34)
+	heal_base(run_upgrades.on_kill_heal)
 
 func damage_base(amount: float) -> void:
 	if state == State.FINISHED:
@@ -119,6 +116,12 @@ func damage_base(amount: float) -> void:
 	base_changed.emit(base_hp, max_base_hp)
 	if base_hp <= 0.0:
 		finish(false, "방어 실패")
+
+func heal_base(amount: float) -> void:
+	if amount <= 0.0 or state == State.FINISHED:
+		return
+	base_hp = minf(max_base_hp, base_hp + amount)
+	base_changed.emit(base_hp, max_base_hp)
 
 func request_fx(kind: String, world_pos: Vector2, radius: float, color: Color, lifetime: float) -> void:
 	fx_requested.emit(kind, world_pos, radius, color, lifetime)
@@ -143,10 +146,34 @@ func finish(success: bool, reason: String) -> void:
 	}
 	battle_finished.emit(summary)
 
+## 웨이브 사이 강화 3택. 후보는 (전투 시드, 다음 웨이브 인덱스, 보유 강화)로 결정되므로 재표시해도 같다.
+func _offer_upgrades() -> void:
+	upgrade_choices = UpgradePool.draw(wave_index + 1, battle_seed, run_upgrades.taken)
+	if upgrade_choices.is_empty():
+		_start_wave(wave_index + 1)
+		return
+	state = State.CHOOSING_UPGRADE
+	status_changed.emit("강화를 선택하세요")
+	upgrade_offered.emit(upgrade_choices)
+
+## 3택 중 하나를 확정하고 다음 웨이브를 시작한다. 선택 전에는 어떤 경로로도 웨이브가 진행되지 않는다.
+func choose_upgrade(index: int) -> bool:
+	if state != State.CHOOSING_UPGRADE:
+		return false
+	if index < 0 or index >= upgrade_choices.size():
+		return false
+	var picked := upgrade_choices[index]
+	run_upgrades.apply(picked)
+	upgrade_choices = []
+	upgrade_chosen.emit(picked)
+	_start_wave(wave_index + 1)
+	return true
+
 func _start_wave(index: int) -> void:
 	wave_index = index
 	wave_elapsed = 0.0
 	state = State.RUNNING
+	heal_base(run_upgrades.base_regen_per_wave)
 	var wave: WaveDef = stage.waves[index]
 	spawner.load_wave(wave)
 	wave_started.emit(index, stage.waves.size(), wave.display_name)
