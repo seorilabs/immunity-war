@@ -3,6 +3,7 @@ extends Control
 ## 전투 HUD 표시 전용. 컨트롤러 상태를 시그널·update 호출로만 반영한다.
 
 signal skill_pressed
+signal reinforce_pressed
 signal retreat_pressed
 
 var _hp_label: Label
@@ -11,6 +12,7 @@ var _time_label: Label
 var _status_label: Label
 var _skill_button: Button
 var _cooldown_bar: ProgressBar
+var _reinforce_button: Button
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -73,16 +75,32 @@ func _ready() -> void:
 	_cooldown_bar.custom_minimum_size = Vector2(0.0, 8.0)
 	skill_box.add_child(_cooldown_bar)
 
+	_reinforce_button = Button.new()
+	_reinforce_button.custom_minimum_size = Vector2(84.0, 54.0)
+	_reinforce_button.disabled = true
+	_reinforce_button.text = "증원 0%"
+	_reinforce_button.pressed.connect(func() -> void: reinforce_pressed.emit())
+	action_row.add_child(_reinforce_button)
+
 	var retreat_button := Button.new()
 	retreat_button.text = "철수"
 	retreat_button.custom_minimum_size = Vector2(74.0, 54.0)
 	retreat_button.pressed.connect(func() -> void: retreat_pressed.emit())
 	action_row.add_child(retreat_button)
 
-func update_hud(base_hp: float, wave_index: int, wave_total: int, elapsed: float) -> void:
-	_hp_label.text = "체력 " + str(int(round(base_hp)))
+func update_hud(wave_index: int, wave_total: int, elapsed: float) -> void:
 	_wave_label.text = "웨이브 %d/%d" % [wave_index + 1, wave_total]
 	_time_label.text = _format_time(elapsed)
+
+func update_base(base_hp: float, _max_hp: float, shield: float) -> void:
+	var text := "체력 " + str(int(round(base_hp)))
+	if shield > 0.0:
+		text += " ⛨" + str(int(round(shield)))
+	_hp_label.text = text
+
+func update_reinforce(gauge: float, ready: bool) -> void:
+	_reinforce_button.disabled = not ready
+	_reinforce_button.text = "증원!" if ready else "증원 %d%%" % int(gauge)
 
 func update_skill(skill_name: String, cooldown: float, max_cooldown: float) -> void:
 	if cooldown <= 0.0:

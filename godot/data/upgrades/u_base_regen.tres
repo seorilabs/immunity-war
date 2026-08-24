@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_fpe0t"]
+
+[resource]
+script = ExtResource("1_fpe0t")
+id = &"u_base_regen"
+display_name = "조직 재생"
+description = "웨이브 시작 시 기지 HP +12"
+effect_kind = 4
+value = 12.0

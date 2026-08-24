@@ -8,6 +8,10 @@ var controller: BattleController
 var home_position := Vector2.ZERO
 var fire_timer := 0.0
 var pulse_seed := 0.0
+var level := 1
+var active := true
+## 증원으로 소환된 임시 세포의 잔여 시간 (음수면 상시).
+var expire_timer := -1.0
 
 func configure(new_def: CellDef, leader: bool, new_controller: BattleController, new_home: Vector2) -> void:
 	def = new_def
@@ -18,6 +22,14 @@ func configure(new_def: CellDef, leader: bool, new_controller: BattleController,
 	pulse_seed = controller.rng.randf() * TAU
 
 func step(delta: float) -> void:
+	if expire_timer > 0.0:
+		expire_timer -= delta
+		if expire_timer <= 0.0:
+			active = false
+			controller.request_fx("ring", position, 34.0, def.accent, 0.4)
+			queue_free()
+			return
+
 	fire_timer = maxf(0.0, fire_timer - delta)
 	var target := controller.registry.find_nearest_enemy(position, def.attack_range + 120.0)
 	var desired := home_position
@@ -27,8 +39,8 @@ func step(delta: float) -> void:
 		if position.distance_to(target.position) <= def.attack_range:
 			desired = position
 			if fire_timer <= 0.0:
-				fire_timer = def.attack_rate
-				controller.fire_projectile(self, target, def.damage, def.accent)
+				fire_timer = controller.cell_attack_interval(def)
+				controller.fire_projectile(self, target, controller.cell_damage(def, level), def.accent)
 
 	position = position.move_toward(ArenaLayout.clamp_to_arena(controller.arena_size, desired), def.speed * delta)
 	queue_redraw()

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ChapterDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/chapter_def.gd" id="1_bqe8d"]
+[ext_resource type="Script" path="res://scripts/data/stage_def.gd" id="2_8nkbw"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_1.tres" id="3_bjuef"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_2.tres" id="4_hodph"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_3.tres" id="5_ib4fr"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_4.tres" id="6_c5awe"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_5.tres" id="7_b1vnh"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_6.tres" id="8_w4ilt"]
+[ext_resource type="Resource" path="res://data/stages/stage_1_7.tres" id="9_nqtdu"]
+
+[resource]
+script = ExtResource("1_bqe8d")
+id = &"ch1"
+display_name = "상처 피부"
+stages = Array[ExtResource("2_8nkbw")]([ExtResource("3_bjuef"), ExtResource("4_hodph"), ExtResource("5_ib4fr"), ExtResource("6_c5awe"), ExtResource("7_b1vnh"), ExtResource("8_w4ilt"), ExtResource("9_nqtdu")])

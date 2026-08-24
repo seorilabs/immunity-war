@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_h7js6"]
+
+[resource]
+script = ExtResource("1_h7js6")
+id = &"u_crit"
+display_name = "정밀 타격"
+description = "15% 확률로 피해 2배"
+rarity = 1
+effect_kind = 9
+value = 0.15

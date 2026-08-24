@@ -1,0 +1,132 @@
+[gd_resource type="Resource" script_class="StageDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/stage_def.gd" id="1_wr4pm"]
+[ext_resource type="Script" path="res://scripts/data/wave_def.gd" id="2_18p3i"]
+[ext_resource type="Script" path="res://scripts/data/spawn_entry.gd" id="3_gx8oj"]
+[ext_resource type="Resource" path="res://data/enemies/bacteria_swarm.tres" id="4_ifuvc"]
+[ext_resource type="Resource" path="res://data/enemies/armored_bacteria.tres" id="5_yvnee"]
+[ext_resource type="Resource" path="res://data/enemies/fast_bacteria.tres" id="6_dngyg"]
+
+[sub_resource type="Resource" id="Resource_wr4pm"]
+script = ExtResource("3_gx8oj")
+time = 0.3
+enemy = ExtResource("4_ifuvc")
+count = 6
+spacing = 0.5
+
+[sub_resource type="Resource" id="Resource_18p3i"]
+script = ExtResource("3_gx8oj")
+time = 3.0
+enemy = ExtResource("5_yvnee")
+count = 2
+spacing = 1.5
+lane = 0
+
+[sub_resource type="Resource" id="Resource_gx8oj"]
+script = ExtResource("2_18p3i")
+display_name = "1차 침투"
+spawns = Array[ExtResource("3_gx8oj")]([SubResource("Resource_wr4pm"), SubResource("Resource_18p3i")])
+
+[sub_resource type="Resource" id="Resource_ifuvc"]
+script = ExtResource("3_gx8oj")
+time = 0.3
+enemy = ExtResource("5_yvnee")
+count = 4
+spacing = 1.2
+
+[sub_resource type="Resource" id="Resource_yvnee"]
+script = ExtResource("3_gx8oj")
+time = 2.5
+enemy = ExtResource("4_ifuvc")
+count = 5
+spacing = 0.5
+lane = 2
+
+[sub_resource type="Resource" id="Resource_dngyg"]
+script = ExtResource("2_18p3i")
+display_name = "2차 침투"
+spawns = Array[ExtResource("3_gx8oj")]([SubResource("Resource_ifuvc"), SubResource("Resource_yvnee")])
+
+[sub_resource type="Resource" id="Resource_vceuk"]
+script = ExtResource("3_gx8oj")
+time = 0.3
+enemy = ExtResource("6_dngyg")
+count = 7
+spacing = 0.45
+lane = 0
+
+[sub_resource type="Resource" id="Resource_0etw6"]
+script = ExtResource("3_gx8oj")
+time = 3.0
+enemy = ExtResource("4_ifuvc")
+count = 5
+spacing = 0.5
+
+[sub_resource type="Resource" id="Resource_d6si4"]
+script = ExtResource("2_18p3i")
+display_name = "3차 침투"
+spawns = Array[ExtResource("3_gx8oj")]([SubResource("Resource_vceuk"), SubResource("Resource_0etw6")])
+
+[sub_resource type="Resource" id="Resource_xtubq"]
+script = ExtResource("3_gx8oj")
+time = 0.3
+enemy = ExtResource("5_yvnee")
+count = 4
+spacing = 1.2
+lane = 2
+
+[sub_resource type="Resource" id="Resource_i6ybo"]
+script = ExtResource("3_gx8oj")
+time = 2.0
+enemy = ExtResource("4_ifuvc")
+count = 6
+spacing = 0.45
+
+[sub_resource type="Resource" id="Resource_cerdy"]
+script = ExtResource("3_gx8oj")
+time = 4.0
+enemy = ExtResource("5_yvnee")
+count = 3
+spacing = 1.2
+lane = 0
+
+[sub_resource type="Resource" id="Resource_yvokp"]
+script = ExtResource("2_18p3i")
+display_name = "4차 침투"
+spawns = Array[ExtResource("3_gx8oj")]([SubResource("Resource_xtubq"), SubResource("Resource_i6ybo"), SubResource("Resource_cerdy")])
+
+[sub_resource type="Resource" id="Resource_3qlhi"]
+script = ExtResource("3_gx8oj")
+time = 0.3
+enemy = ExtResource("5_yvnee")
+count = 5
+spacing = 1.1
+
+[sub_resource type="Resource" id="Resource_70tk7"]
+script = ExtResource("3_gx8oj")
+time = 2.0
+enemy = ExtResource("4_ifuvc")
+count = 8
+spacing = 0.4
+lane = 0
+
+[sub_resource type="Resource" id="Resource_o0vo0"]
+script = ExtResource("3_gx8oj")
+time = 5.0
+enemy = ExtResource("6_dngyg")
+count = 6
+spacing = 0.45
+lane = 2
+
+[sub_resource type="Resource" id="Resource_lski2"]
+script = ExtResource("2_18p3i")
+display_name = "5차 침투"
+spawns = Array[ExtResource("3_gx8oj")]([SubResource("Resource_3qlhi"), SubResource("Resource_70tk7"), SubResource("Resource_o0vo0")])
+
+[resource]
+script = ExtResource("1_wr4pm")
+id = &"1-6"
+display_name = "각화 군체"
+order = 6
+hp_mult = 1.3
+waves = Array[ExtResource("2_18p3i")]([SubResource("Resource_gx8oj"), SubResource("Resource_dngyg"), SubResource("Resource_d6si4"), SubResource("Resource_yvokp"), SubResource("Resource_lski2")])

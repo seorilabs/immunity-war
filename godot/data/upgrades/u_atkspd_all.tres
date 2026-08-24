@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_qfrmo"]
+
+[resource]
+script = ExtResource("1_qfrmo")
+id = &"u_atkspd_all"
+display_name = "반응 속도 향상"
+description = "모든 세포 공격 속도 +10%"
+effect_kind = 1
+value = 0.1
