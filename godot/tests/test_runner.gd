@@ -6,6 +6,7 @@ const CombatRulesTest := preload("res://tests/combat_rules_test.gd")
 const UpgradePoolTest := preload("res://tests/upgrade_pool_test.gd")
 const UpgradeOverlayTest := preload("res://tests/upgrade_overlay_test.gd")
 const ReinforceTest := preload("res://tests/reinforce_test.gd")
+const BattleScreenTest := preload("res://tests/battle_screen_test.gd")
 
 var _failures: PackedStringArray = []
 
@@ -58,6 +59,8 @@ func _check_upgrades() -> void:
 func _check_reinforce() -> void:
 	for message in ReinforceTest.run(self):
 		_fail("증원 게이지: " + message)
+	for message in BattleScreenTest.run(self):
+		_fail("전투 화면 배선: " + message)
 
 func _check_save_roundtrip() -> void:
 	var svc := _isolated_save_service("test_save.json")
