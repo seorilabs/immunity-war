@@ -99,7 +99,7 @@ func fire_projectile(source: CellUnit, target: EnemyUnit, damage: float, color: 
 		return
 	var projectile := Projectile.new()
 	projectile.position = source.position
-	projectile.configure(target, damage, color)
+	projectile.configure(target, damage, color, source.def.id)
 	world.add_child(projectile)
 	registry.projectiles.append(projectile)
 

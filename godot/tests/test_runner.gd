@@ -1,13 +1,15 @@
 extends Node
-## 헤드리스 스모크: main_scene 존재, Db 무결성, SaveService 라운드트립·손상 폴백.
+## 헤드리스 스모크: main_scene 존재, Db 무결성, CombatRules test vector, SaveService 라운드트립·손상 폴백.
 
 const SaveServiceScript := preload("res://scripts/autoload/save_service.gd")
+const CombatRulesTest := preload("res://tests/combat_rules_test.gd")
 
 var _failures: PackedStringArray = []
 
 func _ready() -> void:
 	_check_main_scene()
 	_check_db()
+	_check_combat_rules()
 	await _check_save_roundtrip()
 	await _check_save_corruption_fallback()
 
@@ -37,6 +39,10 @@ func _check_db() -> void:
 		_fail("Db 세포 수 부족: %d" % Db.cells.size())
 	if Db.stage(&"1-1") == null:
 		_fail("stage 1-1 누락")
+
+func _check_combat_rules() -> void:
+	for message in CombatRulesTest.run():
+		_fail("CombatRules: " + message)
 
 func _check_save_roundtrip() -> void:
 	var svc := _isolated_save_service("test_save.json")

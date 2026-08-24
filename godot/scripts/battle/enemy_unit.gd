@@ -37,10 +37,11 @@ func step(delta: float) -> void:
 
 	queue_redraw()
 
-func take_damage(amount: float) -> void:
+## source_cell_id로 공격 세포의 태그를 조회해 상성 배율까지 CombatRules 한 곳에서 계산한다.
+func take_damage(amount: float, source_cell_id: StringName = &"") -> void:
 	if not alive:
 		return
-	hp -= CombatRules.final_damage(amount, mark_timer > 0.0)
+	hp -= CombatRules.final_damage(amount, _attacker_tags(source_cell_id), def.tags, mark_timer > 0.0)
 	flash_timer = 0.12
 	if hp <= 0.0:
 		alive = false
@@ -48,6 +49,14 @@ func take_damage(amount: float) -> void:
 		queue_free()
 	else:
 		queue_redraw()
+
+func _attacker_tags(source_cell_id: StringName) -> Array[StringName]:
+	if source_cell_id == &"":
+		return []
+	var source := Db.cell(source_cell_id)
+	if source == null:
+		return []
+	return source.tags
 
 func apply_mark(duration: float) -> void:
 	mark_timer = maxf(mark_timer, duration)
