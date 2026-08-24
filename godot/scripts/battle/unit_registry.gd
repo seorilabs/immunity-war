@@ -50,3 +50,8 @@ func prune() -> void:
 		if is_instance_valid(projectile) and not projectile.is_queued_for_deletion():
 			alive_projectiles.append(projectile)
 	projectiles = alive_projectiles
+	var active_cells: Array[CellUnit] = []
+	for cell in cells:
+		if is_instance_valid(cell) and cell.active:
+			active_cells.append(cell)
+	cells = active_cells

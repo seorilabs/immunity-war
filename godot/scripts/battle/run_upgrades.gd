@@ -11,7 +11,10 @@ const SUPPORTED_KINDS := [
 	UpgradeDef.EffectKind.SKILL_CD_MULT,
 	UpgradeDef.EffectKind.BASE_REGEN,
 	UpgradeDef.EffectKind.ON_KILL_HEAL,
+	UpgradeDef.EffectKind.REINFORCE_CHARGE,
+	UpgradeDef.EffectKind.WAVE_SHIELD,
 	UpgradeDef.EffectKind.SLOW_AURA,
+	UpgradeDef.EffectKind.CRIT,
 ]
 
 var taken: Array[StringName] = []
@@ -22,7 +25,11 @@ var mark_bonus := 0.0
 var skill_cooldown_mult := 1.0
 var base_regen_per_wave := 0.0
 var on_kill_heal := 0.0
-var enemy_speed_mult := 1.0
+var reinforce_charge_mult := 1.0
+var wave_shield := 0.0
+var crit_chance := 0.0
+## 기지 경계 근처(SLOW_AURA_RANGE)에 적용되는 이속 감쇠 계수 (05 u_slow_aura — 경계 근처 한정).
+var slow_aura_factor := 0.0
 
 func apply(upgrade: UpgradeDef) -> void:
 	if upgrade == null:
@@ -45,8 +52,14 @@ func apply(upgrade: UpgradeDef) -> void:
 			base_regen_per_wave += upgrade.value
 		UpgradeDef.EffectKind.ON_KILL_HEAL:
 			on_kill_heal += upgrade.value
+		UpgradeDef.EffectKind.REINFORCE_CHARGE:
+			reinforce_charge_mult *= 1.0 + upgrade.value
+		UpgradeDef.EffectKind.WAVE_SHIELD:
+			wave_shield += upgrade.value
+		UpgradeDef.EffectKind.CRIT:
+			crit_chance = minf(0.6, crit_chance + upgrade.value)
 		UpgradeDef.EffectKind.SLOW_AURA:
-			enemy_speed_mult *= maxf(0.3, 1.0 - upgrade.value)
+			slow_aura_factor = minf(0.6, slow_aura_factor + upgrade.value)
 		_:
 			push_warning("RunUpgrades: 미구현 effect_kind (%s / %d)" % [upgrade.id, upgrade.effect_kind])
 

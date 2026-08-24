@@ -8,9 +8,21 @@ var controller: BattleController
 var home_position := Vector2.ZERO
 var fire_timer := 0.0
 var pulse_seed := 0.0
-## 0보다 크면 증원으로 투입된 임시 세포 — 남은 시간이 0이 되면 스스로 퇴장한다 (CON-004).
-var remaining_lifetime := 0.0
-var is_temporary := false
+var level := 1
+var active := true
+## 증원으로 소환된 임시 세포의 잔여 시간 (음수면 상시).
+var expire_timer := -1.0
+
+var is_temporary: bool:
+	get:
+		return expire_timer > 0.0
+var remaining_lifetime: float:
+	get:
+		return maxf(0.0, expire_timer)
+
+## CON-004: 증원 세포를 지속시간 후 자연 퇴장하도록 표시한다.
+func make_temporary(duration: float) -> void:
+	expire_timer = duration
 
 func configure(new_def: CellDef, leader: bool, new_controller: BattleController, new_home: Vector2) -> void:
 	def = new_def
@@ -20,16 +32,11 @@ func configure(new_def: CellDef, leader: bool, new_controller: BattleController,
 	position = new_home
 	pulse_seed = controller.rng.randf() * TAU
 
-## 임시 증원 세포로 전환한다. 리더 표식은 갖지 않는다.
-func make_temporary(duration: float) -> void:
-	is_temporary = true
-	is_leader = false
-	remaining_lifetime = duration
-
 func step(delta: float) -> void:
-	if is_temporary:
-		remaining_lifetime -= delta
-		if remaining_lifetime <= 0.0:
+	if expire_timer > 0.0:
+		expire_timer -= delta
+		if expire_timer <= 0.0:
+			active = false
 			controller.on_reinforcement_expired(self)
 			queue_free()
 			return
@@ -43,8 +50,8 @@ func step(delta: float) -> void:
 		if position.distance_to(target.position) <= def.attack_range:
 			desired = position
 			if fire_timer <= 0.0:
-				fire_timer = def.attack_rate * controller.run_upgrades.attack_rate_mult
-				controller.fire_projectile(self, target, def.damage, def.accent)
+				fire_timer = controller.cell_attack_interval(def)
+				controller.fire_projectile(self, target, controller.cell_damage(def, level), def.accent)
 
 	position = position.move_toward(ArenaLayout.clamp_to_arena(controller.arena_size, desired), def.speed * delta)
 	queue_redraw()
@@ -63,10 +70,6 @@ func _draw() -> void:
 
 	if is_leader:
 		draw_arc(Vector2.ZERO, radius + 7.0, -PI * 0.45, PI * 1.45, 48, def.accent, 4.5, true)
-
-	if is_temporary:
-		var fade := clampf(remaining_lifetime / 3.0, 0.35, 1.0)
-		draw_arc(Vector2.ZERO, radius + 5.0, 0.0, TAU, 40, _with_alpha(UiStyle.SUCCESS, 0.55 * fade), 2.5, true)
 
 func _with_alpha(color: Color, alpha: float) -> Color:
 	var copy := color

@@ -50,47 +50,54 @@ static func _check_determinism(failures: PackedStringArray) -> void:
 static func _check_effects(failures: PackedStringArray) -> void:
 	var upgrades := RunUpgrades.new()
 	var untagged: Array[StringName] = []
-	var frontline: Array[StringName] = [&"innate", &"frontline", &"phagocytosis"]
+	var innate_tags: Array[StringName] = [&"innate", &"frontline", &"phagocytosis"]
 
-	upgrades.apply(Db.upgrade(&"cytokine_burst"))
-	_expect(failures, "cytokine_burst 공격력 배율", upgrades.damage_mult_for(untagged), 1.15)
-	_expect(failures, "cytokine_burst 반영 피해(100)",
-		CombatRules.final_damage(100.0, untagged, untagged, false, upgrades.damage_mult_for(untagged)), 115.0)
+	upgrades.apply(Db.upgrade(&"u_atk_all"))
+	_expect(failures, "u_atk_all 공격력 배율", upgrades.damage_mult_for(untagged), 1.10)
+	_expect(failures, "u_atk_all 반영 피해(100)",
+		CombatRules.final_damage(100.0, untagged, untagged, false, upgrades.damage_mult_for(untagged)), 110.0)
 
-	upgrades.apply(Db.upgrade(&"frontline_drill"))
-	_expect(failures, "frontline_drill 태그 한정 배율", upgrades.damage_mult_for(frontline), 1.4375)
-	_expect(failures, "frontline_drill 비대상 태그 불변", upgrades.damage_mult_for(untagged), 1.15)
+	upgrades.apply(Db.upgrade(&"u_atk_innate"))
+	_expect(failures, "u_atk_innate 태그 한정 배율", upgrades.damage_mult_for(innate_tags), 1.265)
+	_expect(failures, "u_atk_innate 비대상 태그 불변", upgrades.damage_mult_for(untagged), 1.10)
 
-	upgrades.apply(Db.upgrade(&"opsonin_boost"))
-	_expect(failures, "opsonin_boost 표식 피해(100)",
+	upgrades.apply(Db.upgrade(&"u_mark_bonus"))
+	_expect(failures, "u_mark_bonus 표식 피해(100)",
 		CombatRules.final_damage(100.0, untagged, untagged, true, 1.0, 1.0, upgrades.mark_bonus), 170.0)
 
-	upgrades.apply(Db.upgrade(&"rapid_response"))
-	_expect(failures, "rapid_response 공격 주기 배율", upgrades.attack_rate_mult, 0.88)
-	upgrades.apply(Db.upgrade(&"signal_relay"))
-	_expect(failures, "signal_relay 쿨다운 배율", upgrades.skill_cooldown_mult, 0.8)
-	upgrades.apply(Db.upgrade(&"tissue_repair"))
-	_expect(failures, "tissue_repair 웨이브 회복량", upgrades.base_regen_per_wave, 10.0)
-	upgrades.apply(Db.upgrade(&"phagocytic_feast"))
-	_expect(failures, "phagocytic_feast 처치 회복량", upgrades.on_kill_heal, 0.5)
-	upgrades.apply(Db.upgrade(&"mucus_trap"))
-	_expect(failures, "mucus_trap 적 이속 배율", upgrades.enemy_speed_mult, 0.85)
+	upgrades.apply(Db.upgrade(&"u_atkspd_all"))
+	_expect(failures, "u_atkspd_all 공격 주기 배율", upgrades.attack_rate_mult, 0.9)
+	upgrades.apply(Db.upgrade(&"u_skill_cd"))
+	_expect(failures, "u_skill_cd 쿨다운 배율", upgrades.skill_cooldown_mult, 0.8)
+	upgrades.apply(Db.upgrade(&"u_base_regen"))
+	_expect(failures, "u_base_regen 웨이브 회복량", upgrades.base_regen_per_wave, 12.0)
+	upgrades.apply(Db.upgrade(&"u_reinforce_charge"))
+	_expect(failures, "u_reinforce_charge 충전 배율", upgrades.reinforce_charge_mult, 1.25)
+	upgrades.apply(Db.upgrade(&"u_slow_aura"))
+	_expect(failures, "u_slow_aura 오라 감쇠", upgrades.slow_aura_factor, 0.25)
+	upgrades.apply(Db.upgrade(&"u_wave_shield"))
+	_expect(failures, "u_wave_shield 실드량", upgrades.wave_shield, 30.0)
+	upgrades.apply(Db.upgrade(&"u_crit"))
+	_expect(failures, "u_crit 확률", upgrades.crit_chance, 0.15)
 
-	if upgrades.taken.size() != 8:
+	if upgrades.taken.size() != 10:
 		failures.append("보유 강화 누적 실패: %s" % str(upgrades.taken))
 
 static func _check_battle_flow(failures: PackedStringArray, host: Node) -> void:
 	var world := Node2D.new()
 	host.add_child(world)
 
-	var roster: Array[CellDef] = [Db.cell(&"macrophage")]
+	var config := BattleConfig.new()
+	config.stage = Db.stage(&"1-1")
+	config.rng_seed = 12345
+	config.roster = [Db.cell(&"macrophage")]
 	for teammate_id in Db.teammate_ids(&"macrophage"):
-		roster.append(Db.cell(teammate_id))
-	var controller := BattleController.new(Db.stage(&"1-1"), roster, world, Vector2(390.0, 844.0), 12345)
+		config.roster.append(Db.cell(teammate_id))
+	var controller := BattleController.new(config, world)
 	controller.start()
 
 	var steps := 0
-	while controller.state == BattleController.State.RUNNING and steps < MAX_STEPS:
+	while (controller.state == BattleController.State.RUNNING or controller.state == BattleController.State.BETWEEN_WAVES) and steps < MAX_STEPS:
 		controller.step(FIXED_DELTA)
 		if controller.can_use_skill():
 			controller.use_leader_skill()
@@ -142,7 +149,7 @@ static func _check_battle_flow(failures: PackedStringArray, host: Node) -> void:
 	while controller.state != BattleController.State.FINISHED and steps < MAX_STEPS:
 		controller.step(FIXED_DELTA)
 		if controller.state == BattleController.State.CHOOSING_UPGRADE:
-			if controller.wave_index >= controller.stage.waves.size() - 1:
+			if controller.wave_index >= controller.stage().waves.size() - 1:
 				failures.append("마지막 웨이브 후 강화 화면이 표시됨")
 				break
 			controller.choose_upgrade(0)
@@ -151,8 +158,8 @@ static func _check_battle_flow(failures: PackedStringArray, host: Node) -> void:
 		steps += 1
 	if controller.state != BattleController.State.FINISHED:
 		failures.append("강화 3택 경로로 전투가 %d스텝 안에 종료되지 않음 (state=%d wave=%d)" % [MAX_STEPS, controller.state, controller.wave_index])
-	if controller.run_upgrades.taken.size() != controller.stage.waves.size() - 1:
-		failures.append("웨이브 사이 강화 횟수 이상: %s (웨이브 %d개)" % [str(controller.run_upgrades.taken), controller.stage.waves.size()])
+	if controller.run_upgrades.taken.size() != controller.stage().waves.size() - 1:
+		failures.append("웨이브 사이 강화 횟수 이상: %s (웨이브 %d개)" % [str(controller.run_upgrades.taken), controller.stage().waves.size()])
 
 	_teardown(host, world)
 

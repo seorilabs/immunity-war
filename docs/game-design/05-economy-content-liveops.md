@@ -27,7 +27,7 @@
 첫 클리어     first(i) = base(i) x 3               (보스 스테이지는 x5)
 반복 클리어   repeat(i) = base(i)                  (첫 클리어의 1/3)
 레벨업 비용   cost(lv) = floor(40 x 1.6^(lv-1))    (lv→lv+1, 최대 lv 10)
-누적 비용     total(1→10) = sum = 4479
+누적 비용     total(1→10) = sum = 4511
 스탯 배율     level_mult(lv) = 1 + 0.12 x (lv - 1) (HP·공격력 공통, 02 문서 CON-006)
 반올림        지급·비용 모두 floor, 표시 동일
 ```
@@ -38,7 +38,7 @@
 | VEC-002 | first(8) 보스 1-8 | (18+48) x 5 = 330 | 정수 | 동일 |
 | VEC-003 | cost(1) | 40 | floor | 동일 |
 | VEC-004 | cost(5) | floor(40 x 6.5536) = 262 | floor | 동일 |
-| VEC-005 | cost 합 lv1→10 | 4479 | floor 누적 | 동일 |
+| VEC-005 | cost 합 lv1→10 | 4511 | floor 누적 | 동일 |
 | VEC-006 | level_mult(10) | 2.08 | 소수 유지 | CombatRules vector |
 
 ## 보상 일정

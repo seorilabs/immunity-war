@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UpgradeDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_def.gd" id="1_tskty"]
+
+[resource]
+script = ExtResource("1_tskty")
+id = &"u_mark_bonus"
+display_name = "옵소닌화 증폭"
+description = "표식 피해 계수 +0.25"
+effect_kind = 2
+value = 0.25

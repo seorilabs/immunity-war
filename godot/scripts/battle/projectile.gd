@@ -6,13 +6,13 @@ var target: EnemyUnit
 var damage := 8.0
 var speed := 320.0
 var projectile_color := Color.WHITE
-var source_cell_id: StringName = &""
+var attack_tags: Array[StringName] = []
 
-func configure(new_target: EnemyUnit, new_damage: float, new_color: Color, new_source_cell_id: StringName) -> void:
+func configure(new_target: EnemyUnit, new_damage: float, new_color: Color, new_attack_tags: Array[StringName]) -> void:
 	target = new_target
 	damage = new_damage
 	projectile_color = new_color
-	source_cell_id = new_source_cell_id
+	attack_tags = new_attack_tags
 
 func step(delta: float) -> void:
 	if not is_instance_valid(target) or not target.alive:
@@ -21,7 +21,7 @@ func step(delta: float) -> void:
 
 	var to_target := target.position - position
 	if to_target.length() <= maxf(12.0, speed * delta):
-		target.take_damage(damage, source_cell_id)
+		target.take_damage(damage, attack_tags)
 		queue_free()
 		return
 

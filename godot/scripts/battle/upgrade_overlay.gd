@@ -2,6 +2,10 @@ class_name UpgradeOverlay
 extends Control
 ## SCR-005 강화 3택 오버레이. 표시 전용이며 선택 인덱스만 시그널로 올린다.
 ## 전장이 비치도록 반투명 딤 위에 카드를 얹고, 카드 열은 하단 엄지 존에 둔다.
+##
+## 레이아웃 규칙 (Godot 4.7): 동적 Control은 앵커를 add_child "전에" 지정하고
+## 내부는 컨테이너 체인으로만 배치한다. 앵커 잡힌 노드에 explicit size를 주면
+## _ready 후 앵커 기준으로 덮어써지고, 좌표 공간은 창 스케일에 따라 달라진다.
 
 signal choice_selected(index: int)
 
@@ -75,6 +79,7 @@ func _card(upgrade: UpgradeDef, index: int) -> Button:
 	var name_label := UiStyle.label(upgrade.display_name, 18, UiStyle.TEXT_PRIMARY)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_label.custom_minimum_size = Vector2(0.0, 26.0)
 	header.add_child(name_label)
 
 	var badge := UiStyle.label("희귀" if is_rare else "일반", 13, border, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -86,6 +91,7 @@ func _card(upgrade: UpgradeDef, index: int) -> Button:
 	desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	desc.clip_text = false
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.custom_minimum_size = Vector2(0.0, 34.0)
 	box.add_child(desc)
 
 	return button
