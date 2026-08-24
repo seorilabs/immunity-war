@@ -10,8 +10,9 @@ signal battle_finished(summary: Dictionary)
 signal upgrade_offered(choices: Array[UpgradeDef])
 signal upgrade_chosen(upgrade: UpgradeDef)
 signal reinforcement_called(cell_def: CellDef)
+signal paused_changed(paused: bool)
 
-enum State {RUNNING, CHOOSING_UPGRADE, FINISHED}
+enum State {RUNNING, PAUSED, CHOOSING_UPGRADE, FINISHED}
 
 ## CON-003 증원 게이지: 처치당 8, 최대 100. CON-004 증원 지속: 15s.
 const REINFORCE_GAIN_PER_KILL := 8.0
@@ -83,6 +84,27 @@ func step(delta: float) -> void:
 			finish(true, "방어 성공")
 		else:
 			_offer_upgrades()
+
+## 전투를 얼린다. 강화 3택 중(이미 정지)이나 종료 후에는 진입하지 않는다 (03-ui-ux-spec.md:35).
+func pause() -> bool:
+	if state != State.RUNNING:
+		return false
+	state = State.PAUSED
+	status_changed.emit("일시정지")
+	paused_changed.emit(true)
+	return true
+
+## 멈춘 시점 그대로 이어 간다 — 웨이브 경과·스폰 커서·쿨다운은 pause 중 아무것도 건드리지 않는다.
+func resume() -> bool:
+	if state != State.PAUSED:
+		return false
+	state = State.RUNNING
+	status_changed.emit(stage.waves[wave_index].display_name)
+	paused_changed.emit(false)
+	return true
+
+func is_paused() -> bool:
+	return state == State.PAUSED
 
 func skill() -> SkillDef:
 	return roster[0].skill
@@ -175,8 +197,9 @@ func heal_base(amount: float) -> void:
 func request_fx(kind: String, world_pos: Vector2, radius: float, color: Color, lifetime: float) -> void:
 	fx_requested.emit(kind, world_pos, radius, color, lifetime)
 
+## 일시정지 오버레이의 "포기" — 실패로 기록하고 결과 화면으로 보낸다.
 func retreat() -> void:
-	finish(false, "철수")
+	finish(false, "포기")
 
 func finish(success: bool, reason: String) -> void:
 	if state == State.FINISHED:

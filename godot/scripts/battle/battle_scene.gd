@@ -9,6 +9,7 @@ var _controller: BattleController
 var _world: Node2D
 var _hud: BattleHud
 var _upgrade_overlay: UpgradeOverlay
+var _pause_overlay: PauseOverlay
 
 func setup(args: Dictionary) -> void:
 	_leader_id = args.get("leader", GameState.selected_leader)
@@ -40,8 +41,60 @@ func _ready() -> void:
 	_controller.upgrade_offered.connect(_show_upgrade_overlay)
 	_hud.skill_pressed.connect(func() -> void: _controller.use_leader_skill())
 	_hud.reinforce_pressed.connect(func() -> void: _controller.call_reinforcement())
-	_hud.retreat_pressed.connect(func() -> void: _controller.retreat())
+	_hud.pause_pressed.connect(func() -> void: open_pause())
 	_controller.start()
+
+## Android back: 전투 중이면 일시정지 오버레이를 열고, 열려 있으면 닫는다.
+## 강화 3택 중에는 선택이 필수라 무시한다 (03-ui-ux-spec.md:34~35).
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		handle_back_request()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		handle_focus_out()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and handle_back_request():
+		get_viewport().set_input_as_handled()
+
+## true 를 반환하면 back 을 소비했다는 뜻이다.
+func handle_back_request() -> bool:
+	if _controller == null:
+		return false
+	if is_instance_valid(_pause_overlay):
+		close_pause()
+		return true
+	return open_pause()
+
+## 앱이 백그라운드로 가면 전투 중일 때 일시정지 상태로 들어간다 (03-ui-ux-spec.md:36).
+func handle_focus_out() -> bool:
+	return open_pause()
+
+func open_pause() -> bool:
+	if _controller == null or is_instance_valid(_pause_overlay):
+		return false
+	if not _controller.pause():
+		return false
+	_pause_overlay = PauseOverlay.new()
+	_pause_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(_pause_overlay)
+	_pause_overlay.setup()
+	_pause_overlay.resume_pressed.connect(close_pause)
+	_pause_overlay.give_up_pressed.connect(_on_give_up)
+	return true
+
+func close_pause() -> void:
+	if is_instance_valid(_pause_overlay):
+		_pause_overlay.queue_free()
+		_pause_overlay = null
+	if _controller != null:
+		_controller.resume()
+
+func _on_give_up() -> void:
+	if is_instance_valid(_pause_overlay):
+		_pause_overlay.queue_free()
+		_pause_overlay = null
+	if _controller != null:
+		_controller.retreat()
 
 func _process(delta: float) -> void:
 	if _controller == null or _controller.state == BattleController.State.FINISHED:
