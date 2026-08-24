@@ -1,5 +1,5 @@
 extends Node
-## 헤드리스 스모크: main_scene 존재, Db 무결성, CombatRules test vector, 강화 3택, 증원 게이지, 일시정지, SaveService 라운드트립·손상 폴백.
+## 헤드리스 스모크: main_scene 존재, Db 무결성, CombatRules test vector, 강화 3택, 증원 게이지, 일시정지, 계측 이벤트, SaveService 라운드트립·손상 폴백.
 
 const SaveServiceScript := preload("res://scripts/autoload/save_service.gd")
 const CombatRulesTest := preload("res://tests/combat_rules_test.gd")
@@ -9,6 +9,7 @@ const ReinforceTest := preload("res://tests/reinforce_test.gd")
 const BattleScreenTest := preload("res://tests/battle_screen_test.gd")
 const PauseTest := preload("res://tests/pause_test.gd")
 const PauseOverlayTest := preload("res://tests/pause_overlay_test.gd")
+const AnalyticsTest := preload("res://tests/analytics_test.gd")
 
 var _failures: PackedStringArray = []
 
@@ -19,6 +20,7 @@ func _ready() -> void:
 	_check_upgrades()
 	_check_reinforce()
 	_check_pause()
+	_check_analytics()
 	await _check_save_roundtrip()
 	await _check_save_corruption_fallback()
 
@@ -70,6 +72,10 @@ func _check_pause() -> void:
 		_fail("일시정지: " + message)
 	for message in PauseOverlayTest.run(self):
 		_fail("일시정지 오버레이: " + message)
+
+func _check_analytics() -> void:
+	for message in AnalyticsTest.run(self):
+		_fail("계측: " + message)
 
 func _check_save_roundtrip() -> void:
 	var svc := _isolated_save_service("test_save.json")
