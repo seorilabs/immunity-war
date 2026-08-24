@@ -4,7 +4,7 @@ extends Control
 
 signal skill_pressed
 signal reinforce_pressed
-signal retreat_pressed
+signal pause_pressed
 
 var _hp_label: Label
 var _wave_label: Label
@@ -95,11 +95,12 @@ func _ready() -> void:
 	_reinforce_bar.custom_minimum_size = Vector2(0.0, 8.0)
 	reinforce_box.add_child(_reinforce_bar)
 
-	var retreat_button := Button.new()
-	retreat_button.text = "철수"
-	retreat_button.custom_minimum_size = Vector2(74.0, 54.0)
-	retreat_button.pressed.connect(func() -> void: retreat_pressed.emit())
-	action_row.add_child(retreat_button)
+	# 전투 이탈은 2단계 — 여기서는 일시정지만 하고, 포기 확인은 오버레이가 받는다.
+	var pause_button := Button.new()
+	pause_button.text = "일시\n정지"
+	pause_button.custom_minimum_size = Vector2(64.0, 54.0)
+	pause_button.pressed.connect(func() -> void: pause_pressed.emit())
+	action_row.add_child(pause_button)
 
 func update_hud(base_hp: float, wave_index: int, wave_total: int, elapsed: float) -> void:
 	_hp_label.text = "체력 " + str(int(round(base_hp)))
