@@ -40,6 +40,8 @@ var skill_cooldown := 0.0
 var reinforce_gauge := 0.0
 var reinforce_count := 0
 var run_upgrades := RunUpgrades.new()
+## 계측 포트. 기본은 no-op 이며 테스트·후속 GA4 어댑터가 주입으로 교체한다.
+var analytics := AnalyticsPort.new()
 var upgrade_choices: Array[UpgradeDef] = []
 
 func _init(new_stage: StageDef, new_roster: Array[CellDef], new_world: Node2D, new_arena_size: Vector2, seed_value: int) -> void:
@@ -53,6 +55,10 @@ func _init(new_stage: StageDef, new_roster: Array[CellDef], new_world: Node2D, n
 func start() -> void:
 	max_base_hp = stage.base_hp
 	base_hp = stage.base_hp
+	analytics.track(AnalyticsPort.EVENT_LEVEL_START, {
+		AnalyticsPort.PARAM_LEADER_ID: String(roster[0].id),
+		AnalyticsPort.PARAM_STAGE_ID: String(stage.id),
+	})
 	_spawn_cells()
 	_start_wave(0)
 
@@ -117,6 +123,11 @@ func use_leader_skill() -> void:
 		return
 	var leader_skill := skill()
 	skill_cooldown = leader_skill.cooldown * run_upgrades.skill_cooldown_mult
+	analytics.track(AnalyticsPort.EVENT_SKILL_USED, {
+		AnalyticsPort.PARAM_LEADER_ID: String(roster[0].id),
+		AnalyticsPort.PARAM_WAVE: wave_index + 1,
+		AnalyticsPort.PARAM_ELAPSED: elapsed,
+	})
 	status_changed.emit(leader_skill.display_name)
 	SkillSystem.execute(leader_skill, self)
 
@@ -142,6 +153,12 @@ func call_reinforcement() -> bool:
 	world.add_child(cell)
 	registry.cells.append(cell)
 
+	analytics.track(AnalyticsPort.EVENT_REINFORCE_USED, {
+		AnalyticsPort.PARAM_LEADER_ID: String(roster[0].id),
+		AnalyticsPort.PARAM_CELL_ID: String(cell_def.id),
+		AnalyticsPort.PARAM_WAVE: wave_index + 1,
+		AnalyticsPort.PARAM_ELAPSED: elapsed,
+	})
 	status_changed.emit("증원 도착: " + cell_def.display_name)
 	request_fx("ring", cell.position, 46.0, cell_def.accent, 0.5)
 	reinforcement_called.emit(cell_def)
@@ -216,6 +233,16 @@ func finish(success: bool, reason: String) -> void:
 		"defeated": defeated_count,
 		"learning": roster[0].result_copy,
 	}
+	analytics.track(AnalyticsPort.EVENT_LEVEL_END, {
+		AnalyticsPort.PARAM_LEADER_ID: String(roster[0].id),
+		AnalyticsPort.PARAM_STAGE_ID: String(stage.id),
+		AnalyticsPort.PARAM_SUCCESS: success,
+		AnalyticsPort.PARAM_REASON: reason,
+		AnalyticsPort.PARAM_WAVE: wave_index + 1,
+		AnalyticsPort.PARAM_DEFEATED: defeated_count,
+		AnalyticsPort.PARAM_BASE_HP: int(round(base_hp)),
+		AnalyticsPort.PARAM_ELAPSED: elapsed,
+	})
 	battle_finished.emit(summary)
 
 ## 웨이브 사이 강화 3택. 후보는 (전투 시드, 다음 웨이브 인덱스, 보유 강화)로 결정되므로 재표시해도 같다.
@@ -237,6 +264,11 @@ func choose_upgrade(index: int) -> bool:
 	var picked := upgrade_choices[index]
 	run_upgrades.apply(picked)
 	upgrade_choices = []
+	analytics.track(AnalyticsPort.EVENT_UPGRADE_PICKED, {
+		AnalyticsPort.PARAM_UPGRADE_ID: String(picked.id),
+		AnalyticsPort.PARAM_LEADER_ID: String(roster[0].id),
+		AnalyticsPort.PARAM_WAVE: wave_index + 1,
+	})
 	upgrade_chosen.emit(picked)
 	_start_wave(wave_index + 1)
 	return true
@@ -248,6 +280,10 @@ func _start_wave(index: int) -> void:
 	heal_base(run_upgrades.base_regen_per_wave)
 	var wave: WaveDef = stage.waves[index]
 	spawner.load_wave(wave)
+	analytics.track(AnalyticsPort.EVENT_WAVE_REACHED, {
+		AnalyticsPort.PARAM_LEADER_ID: String(roster[0].id),
+		AnalyticsPort.PARAM_WAVE: index + 1,
+	})
 	wave_started.emit(index, stage.waves.size(), wave.display_name)
 	status_changed.emit(wave.display_name)
 
