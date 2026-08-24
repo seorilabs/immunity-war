@@ -4,6 +4,7 @@ extends Node
 const SaveServiceScript := preload("res://scripts/autoload/save_service.gd")
 const CombatRulesTest := preload("res://tests/combat_rules_test.gd")
 const UpgradePoolTest := preload("res://tests/upgrade_pool_test.gd")
+const UpgradeOverlayTest := preload("res://tests/upgrade_overlay_test.gd")
 
 var _failures: PackedStringArray = []
 
@@ -49,6 +50,8 @@ func _check_combat_rules() -> void:
 func _check_upgrades() -> void:
 	for message in UpgradePoolTest.run(self):
 		_fail("강화 3택: " + message)
+	for message in UpgradeOverlayTest.run(self):
+		_fail("강화 오버레이: " + message)
 
 func _check_save_roundtrip() -> void:
 	var svc := _isolated_save_service("test_save.json")
