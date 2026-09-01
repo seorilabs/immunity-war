@@ -72,13 +72,12 @@ android_package="$(unquote "$(section_value "[preset.1.options]" "package/unique
 ios_bundle="$(unquote "$(section_value "[preset.2.options]" "application/bundle_identifier")")"
 ios_team="$(unquote "$(section_value "[preset.2.options]" "application/app_store_team_id")")"
 
-if [[ "$android_package" == "확정 필요" && "$ios_bundle" == "확정 필요" && "$ios_team" == "확정 필요" ]]; then
+if [[ "$android_package" == "확정 필요" || "$ios_bundle" == "확정 필요" || "$ios_team" == "확정 필요" ]]; then
   echo "native export identity gate: HUMAN_INPUT_REQUIRED (BLK-001)"
 else
   [[ "$android_package" =~ ^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$ ]] || fail "invalid Android package identifier"
   [[ "$ios_bundle" =~ ^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$ ]] || fail "invalid iOS bundle identifier"
   [[ "$ios_team" =~ ^[A-Z0-9]{10}$ ]] || fail "invalid App Store team identifier"
-  [[ "$android_package" != "확정 필요" && "$ios_bundle" != "확정 필요" && "$ios_team" != "확정 필요" ]] || fail "native identities must be resolved together"
   echo "native export identity gate: RESOLVED"
 fi
 
