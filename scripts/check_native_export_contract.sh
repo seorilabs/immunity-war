@@ -64,7 +64,7 @@ while IFS= read -r resource; do
   [[ -e "$project_dir/$relative_path" ]] || fail "missing referenced resource: $resource"
 done < <(grep -Eo 'res://[^" ]+' "$presets_file" | sort -u)
 
-if grep -En '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|keystore/(release|debug)(_password)?=.+|password=.+)' "$presets_file"; then
+if grep -Eq '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|keystore/(release|debug)(_password)?=.+|password=.+)' "$presets_file"; then
   fail "signing material must not be stored in export_presets.cfg"
 fi
 
