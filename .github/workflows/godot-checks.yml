@@ -25,6 +25,8 @@ jobs:
       runs_on: seorilabs-rpi-arm64
       project_dir: godot
       check_command: |
+        node scripts/check_platform_sdk.mjs
+        node --test scripts/tests/*.test.mjs
         REQUIRE_GODOT_EXPORT_TEMPLATES=1 VERIFY_EXPORT_PACKS=1 bash scripts/check_native_export_contract.sh
         bash scripts/godot_quality_gate.sh --project godot --smoke-scene res://tests/test_runner.tscn
         godot --headless --path godot res://tests/balance_sim.tscn
