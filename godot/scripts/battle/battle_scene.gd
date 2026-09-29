@@ -21,6 +21,7 @@ func _ready() -> void:
 	var background := ArenaBackground.new()
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
+	background.setup(_stage_id)
 
 	_world = Node2D.new()
 	add_child(_world)
@@ -99,7 +100,7 @@ func _process(delta: float) -> void:
 		return
 	_controller.step(delta)
 	_hud.update_hud(_controller.wave_index, _controller.stage().waves.size(), _controller.elapsed)
-	_hud.update_skill(_controller.skill().display_name, _controller.skill_cooldown, _controller.skill_max_cooldown())
+	_hud.update_skill(_controller.skill().id, _controller.skill().display_name, _controller.skill_cooldown, _controller.skill_max_cooldown())
 	_hud.update_reinforce(_controller.reinforce_gauge, BattleController.REINFORCE_MAX, _controller.can_reinforce())
 
 func _spawn_fx(kind: String, world_pos: Vector2, radius: float, color: Color, lifetime: float) -> void:

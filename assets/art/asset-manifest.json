@@ -1,0 +1,265 @@
+{
+  "version": "0.2.0",
+  "generated_by": "MiniMax image-01 via mmx image CLI",
+  "out_dir_raw": "raw",
+  "out_dir_final": "../../godot/assets/sprites",
+  "style": "../style/style-guide.md",
+  "anchor": null,
+  "anchor_note": "MiniMax cannot enforce anchor contract (verified 2026-09-13). Style consistency comes from universal prompt prefix + locked palette + contact sheet QA.",
+  "finalize": {
+    "transparent_default": true,
+    "trim_alpha_bbox": true,
+    "center_on_canvas": true,
+    "format": "png"
+  },
+  "universal_prefix": "flat vector 2D game sprite, soft neon glow rim light, dark deep-green microscopic world, two-tone flat shading with single highlight, no outline, cute but composed mood, readable silhouette at 40px, no text, isolated subject only, no environment, no ground, no scenery, single character on transparent background",
+  "scene_prefix": "flat 2D game background illustration, soft neon ambient lighting, dark deep-green mood, two-tone soft shading, no outline, no text, calm atmospheric depth",
+  "wiring_scope_note": "Cells/enemies/upgrades are wired via SpriteLoader by id (e.g. macrophage.png, u_skill_cd.png). Only assets whose ids match existing .tres files render in-game today. Future-scope assets (dendritic, complement, killer_t, helper_t, memory, toxin_bacteria, spore_bacteria, boss_bacteria) are generated here but inert until the corresponding data is added. Learning cards + home key visual are out of scope until data is implemented.",
+  "assets": [
+    {
+      "name": "macrophage",
+      "category": "cells",
+      "prompt_suffix": "the biggest plump teal-green cell #28D2A3 with soft wavy uneven membrane edges, short stubby pseudopods, half-moon calm sleepy eyes, big round squishy body, no spikes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1001
+    },
+    {
+      "name": "neutrophil",
+      "category": "cells",
+      "prompt_suffix": "roundish yellow #F2D95C cell with six short triangular spikes around the edge (not long spikes), bulging dot eyes, looks eager and a bit reckless, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1002
+    },
+    {
+      "name": "b_cell",
+      "category": "cells",
+      "prompt_suffix": "tall sky-blue #63B3FF cell with two Y-shaped antibody antennas on top, calm narrow eyes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1003
+    },
+    {
+      "name": "dendritic",
+      "category": "cells",
+      "prompt_suffix": "lavender #B78CFF star-shaped cell with branching dendrites, large curious eyes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1004,
+      "future_scope": true
+    },
+    {
+      "name": "complement",
+      "category": "cells",
+      "prompt_suffix": "three small mint-cyan #7FE8D8 rings fused together like a chain, no eyes, looks like a non-living protein cascade, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1005,
+      "future_scope": true
+    },
+    {
+      "name": "killer_t",
+      "category": "cells",
+      "prompt_suffix": "sleek pink #FF8FB1 cell with dagger-like spikes and narrow slit eyes, looks cold and focused, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1006,
+      "future_scope": true
+    },
+    {
+      "name": "helper_t",
+      "category": "cells",
+      "prompt_suffix": "round warm-orange #FFC978 cell with a small broadcast antenna on top, gentle smile, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1007,
+      "future_scope": true
+    },
+    {
+      "name": "memory",
+      "category": "cells",
+      "prompt_suffix": "soft-blue #9BB8FF cell with a small bookmark ribbon sticking out, sleepy half-closed eyes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 1008,
+      "future_scope": true
+    },
+
+    {
+      "name": "bacteria_swarm",
+      "category": "enemies",
+      "prompt_suffix": "a tight floating cluster of capsule-shaped red #F45656 bacteria with no host body, each capsule visible separately, no plant stem, no ground, no scenery, no eyes, menacing dark red tone, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 2001
+    },
+    {
+      "name": "armored_bacteria",
+      "category": "enemies",
+      "prompt_suffix": "angular thick purple #C35CFF bacterium with plated armor shell and short spikes, no eyes, no ground, no plant, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 2002
+    },
+    {
+      "name": "fast_bacteria",
+      "category": "enemies",
+      "prompt_suffix": "streamlined orange #FF8D42 bacterium, aerodynamic, pointy ends, no eyes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 2003
+    },
+    {
+      "name": "toxin_bacteria",
+      "category": "enemies",
+      "prompt_suffix": "lime-green #A6E22E bacterium with a nozzle-like mouth and drooling toxin droplets, no eyes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 2004,
+      "future_scope": true
+    },
+    {
+      "name": "spore_bacteria",
+      "category": "enemies",
+      "prompt_suffix": "magenta #E06CD9 capsule bacterium with sharp spore spikes around the body, no eyes, no ground, no scenery, three-quarter view",
+      "size": 512,
+      "transparent": true,
+      "seed": 2005,
+      "future_scope": true
+    },
+    {
+      "name": "boss_bacteria",
+      "category": "enemies",
+      "prompt_suffix": "massive purple #8A2BE2 boss bacterium with a cyan #BFE9FF glowing energy shield, glowing core visible through the shield, no ground, no scenery, three-quarter view",
+      "size": 1024,
+      "transparent": true,
+      "seed": 2006,
+      "future_scope": true
+    },
+
+    {
+      "name": "macrophage_skill",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a teal #28D2A3 swirling predator vortex, inward-curving spiral arms, looks like a pulling vortex, centered, isolated symbol on dark background, no character, no face, no body, no scenery, no ground",
+      "size": 512,
+      "transparent": true,
+      "seed": 3001
+    },
+    {
+      "name": "neutrophil_skill",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a yellow #F2D95C to orange expanding inflammation ring burst, three concentric rings radiating outward from a small core, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3002
+    },
+    {
+      "name": "b_cell_skill",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a single Y-shaped antibody marker icon in cyan-white #BFE9FF, two branching arms with a small glow, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3003
+    },
+
+    {
+      "name": "u_wave_shield",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a cyan #BFE9FF dome shield with subtle inner glow and clean outline, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3101
+    },
+    {
+      "name": "u_skill_cd",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a circular teal clock with a single hand and a shrinking arc, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3102
+    },
+    {
+      "name": "u_atk_innate",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a teal-green target reticle with crosshairs and outer rings, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3103
+    },
+    {
+      "name": "u_base_regen",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a cyan glowing plus-sign medical cross icon for healing, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3104
+    },
+    {
+      "name": "u_atkspd_all",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a yellow speed-arrow stack icon (three arrows layered), centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3105
+    },
+    {
+      "name": "u_atk_all",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a single crossed-sword icon in warm red #FF6A55 with subtle glow, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3106
+    },
+    {
+      "name": "u_atk_adaptive",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: three small overlapping tag-shapes in different warm colors fanning out from a center, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3107
+    },
+    {
+      "name": "u_crit",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a yellow #FFD966 star-burst crit explosion icon with sharp pointy rays, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3108
+    },
+    {
+      "name": "u_slow_aura",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a green #A6E22E slime drip shape with downward oozing motion lines, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3109
+    },
+    {
+      "name": "u_mark_bonus",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a single cyan #BFE9FF antibody mark Y-shape with two amplifying arrows pointing outward, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3110
+    },
+    {
+      "name": "u_reinforce_charge",
+      "category": "icons",
+      "prompt_suffix": "abstract flat 2D UI symbol icon, NOT a character: a single teal lightning bolt over a horizontal glowing progress bar icon, centered, isolated symbol on dark background, no character, no face, no body, no scenery",
+      "size": 512,
+      "transparent": true,
+      "seed": 3111
+    },
+
+    {
+      "name": "ch1_skin",
+      "category": "backgrounds",
+      "prompt_suffix": "atmospheric 2D game background of a microscopic cross-section of wounded skin tissue: layered dermis with translucent pinkish epidermal surface, a subtle red glowing cut line through the middle, faint floating particles, dark deep-green periphery fading in",
+      "size": 1024,
+      "transparent": false,
+      "aspect_ratio": "9:16",
+      "seed": 4001
+    }
+  ]
+}
