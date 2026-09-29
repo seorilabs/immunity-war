@@ -2,6 +2,10 @@ extends Control
 class_name ArenaBackground
 
 var base_x := 58.0
+var chapter_texture: Texture2D
+
+func setup(stage_id: StringName) -> void:
+	chapter_texture = SpriteLoader.try_load(SpriteLoader.background_path(stage_id))
 
 func _process(_delta: float) -> void:
 	queue_redraw()
@@ -9,6 +13,16 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	var size := get_rect().size
 	draw_rect(Rect2(Vector2.ZERO, size), Color("#061615"), true)
+
+	if chapter_texture != null:
+		# Cover the arena while preserving aspect ratio.
+		var tex_size := chapter_texture.get_size()
+		var scale := maxf(size.x / tex_size.x, size.y / tex_size.y)
+		var drawn := tex_size * scale
+		var origin := Vector2((size.x - drawn.x) * 0.5, (size.y - drawn.y) * 0.5)
+		draw_texture_rect_region(chapter_texture, Rect2(origin, drawn), Rect2(Vector2.ZERO, tex_size))
+		# Darken the layer so the foreground lane lines + units still read.
+		draw_rect(Rect2(origin, drawn), Color(0.0, 0.0, 0.0, 0.42), true)
 
 	for i in range(11):
 		var y := 126.0 + i * 52.0
@@ -26,4 +40,3 @@ func _draw() -> void:
 
 func _lane_y(size: Vector2, lane: int) -> float:
 	return lerp(210.0, size.y - 246.0, float(lane) / 2.0)
-

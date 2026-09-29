@@ -183,6 +183,7 @@ func call_reinforcement() -> bool:
 		var cell := CellUnit.new()
 		cell.configure(cell_def, false, self, ArenaLayout.clamp_to_arena(arena_size, home))
 		cell.level = config.cell_level(cell_def.id)
+		cell.set_sprite(SpriteLoader.try_load(SpriteLoader.cell_path(cell_def.id)))
 		cell.make_temporary(REINFORCE_DURATION)
 		world.add_child(cell)
 		registry.cells.append(cell)
@@ -356,6 +357,7 @@ func _spawn_cells() -> void:
 		var cell := CellUnit.new()
 		cell.configure(config.roster[i], i == 0, self, ArenaLayout.cell_home(arena_size, i))
 		cell.level = config.cell_level(config.roster[i].id)
+		cell.set_sprite(SpriteLoader.try_load(SpriteLoader.cell_path(config.roster[i].id)))
 		world.add_child(cell)
 		registry.cells.append(cell)
 	if not registry.cells.is_empty():
@@ -363,7 +365,9 @@ func _spawn_cells() -> void:
 
 func _spawn_enemy(event: Dictionary) -> void:
 	var enemy := EnemyUnit.new()
-	enemy.configure(event["enemy"] as EnemyDef, self, config.stage.hp_mult)
+	var enemy_def := event["enemy"] as EnemyDef
+	enemy.configure(enemy_def, self, config.stage.hp_mult)
+	enemy.set_sprite(SpriteLoader.try_load(SpriteLoader.enemy_path(enemy_def.id)))
 	enemy.position = ArenaLayout.spawn_position(arena_size, int(event["lane"]), rng)
 	world.add_child(enemy)
 	registry.enemies.append(enemy)

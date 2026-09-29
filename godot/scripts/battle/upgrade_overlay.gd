@@ -76,6 +76,14 @@ func _card(upgrade: UpgradeDef, index: int) -> Button:
 	header.add_theme_constant_override("separation", 8)
 	box.add_child(header)
 
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(28.0, 28.0)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.texture = SpriteLoader.try_load(SpriteLoader.upgrade_icon_path(upgrade.id))
+	header.add_child(icon)
+
 	var name_label := UiStyle.label(upgrade.display_name, 18, UiStyle.TEXT_PRIMARY)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL

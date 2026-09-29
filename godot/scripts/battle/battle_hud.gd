@@ -12,9 +12,12 @@ var _wave_label: Label
 var _time_label: Label
 var _status_label: Label
 var _skill_button: Button
+var _skill_icon: TextureRect
 var _cooldown_bar: ProgressBar
 var _reinforce_button: Button
+var _reinforce_button_icon: TextureRect
 var _reinforce_bar: ProgressBar
+var _skill_id: StringName = &""
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -64,10 +67,23 @@ func _ready() -> void:
 	skill_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_row.add_child(skill_box)
 
+	var skill_row := HBoxContainer.new()
+	skill_row.add_theme_constant_override("separation", 6)
+	skill_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	skill_box.add_child(skill_row)
+
+	_skill_icon = TextureRect.new()
+	_skill_icon.custom_minimum_size = Vector2(36.0, 36.0)
+	_skill_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_skill_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_skill_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	skill_row.add_child(_skill_icon)
+
 	_skill_button = Button.new()
 	_skill_button.custom_minimum_size = Vector2(0.0, 54.0)
+	_skill_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_skill_button.pressed.connect(func() -> void: skill_pressed.emit())
-	skill_box.add_child(_skill_button)
+	skill_row.add_child(_skill_button)
 
 	_cooldown_bar = ProgressBar.new()
 	_cooldown_bar.show_percentage = false
@@ -112,7 +128,10 @@ func update_base(base_hp: float, _max_hp: float, shield: float) -> void:
 		text += " ⛨" + str(int(round(shield)))
 	_hp_label.text = text
 
-func update_skill(skill_name: String, cooldown: float, max_cooldown: float) -> void:
+func update_skill(skill_id: StringName, skill_name: String, cooldown: float, max_cooldown: float) -> void:
+	if skill_id != _skill_id:
+		_skill_id = skill_id
+		_skill_icon.texture = SpriteLoader.try_load(SpriteLoader.skill_icon_path(skill_id))
 	if cooldown <= 0.0:
 		_skill_button.text = skill_name
 		_skill_button.disabled = false

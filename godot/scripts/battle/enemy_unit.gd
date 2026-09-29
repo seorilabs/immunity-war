@@ -10,6 +10,8 @@ var stun_timer := 0.0
 var mark_timer := 0.0
 var flash_timer := 0.0
 var wobble_seed := 0.0
+## AI 생성 스프라이트. 없으면 코드 도형으로 폴백.
+var sprite: Texture2D
 
 var max_hp := 30.0
 var slow_timer := 0.0
@@ -21,6 +23,10 @@ func configure(new_def: EnemyDef, new_controller: BattleController, hp_mult: flo
 	max_hp = new_def.hp * hp_mult
 	hp = max_hp
 	wobble_seed = controller.rng.randf() * TAU
+
+## 컨트롤러가 스폰 직후 호출. 텍스처가 있으면 우선 사용.
+func set_sprite(texture: Texture2D) -> void:
+	sprite = texture
 
 func step(delta: float) -> void:
 	if not alive:
@@ -87,14 +93,20 @@ func _draw() -> void:
 
 	var half_len := def.radius * 1.45 * stretch
 	var half_height := def.radius * 0.72 / stretch
-	draw_rect(Rect2(Vector2(-half_len, -half_height), Vector2(half_len * 2.0, half_height * 2.0)), body_color, true)
-	draw_circle(Vector2(-half_len, 0.0), half_height, body_color)
-	draw_circle(Vector2(half_len, 0.0), half_height, body_color)
 
-	var shine := body_color.lerp(Color.WHITE, 0.45)
-	shine.a = 0.5
-	draw_circle(Vector2(-def.radius * 0.55, -def.radius * 0.22), def.radius * 0.18, shine)
-	draw_circle(Vector2(def.radius * 0.45, def.radius * 0.18), def.radius * 0.14, shine)
+	if sprite != null:
+		var size := Vector2(half_len * 2.0, half_height * 2.0 * 1.8)
+		var rect := Rect2(Vector2(-size.x * 0.5, -size.y * 0.5), size)
+		draw_texture_rect(sprite, rect, false)
+	else:
+		draw_rect(Rect2(Vector2(-half_len, -half_height), Vector2(half_len * 2.0, half_height * 2.0)), body_color, true)
+		draw_circle(Vector2(-half_len, 0.0), half_height, body_color)
+		draw_circle(Vector2(half_len, 0.0), half_height, body_color)
+
+		var shine := body_color.lerp(Color.WHITE, 0.45)
+		shine.a = 0.5
+		draw_circle(Vector2(-def.radius * 0.55, -def.radius * 0.22), def.radius * 0.18, shine)
+		draw_circle(Vector2(def.radius * 0.45, def.radius * 0.18), def.radius * 0.14, shine)
 
 	if mark_timer > 0.0:
 		var mark_color := Color("#BFE9FF")

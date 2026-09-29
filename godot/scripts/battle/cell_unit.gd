@@ -12,6 +12,8 @@ var level := 1
 var active := true
 ## 증원으로 소환된 임시 세포의 잔여 시간 (음수면 상시).
 var expire_timer := -1.0
+## AI 생성 스프라이트. 없으면 코드 도형으로 폴백.
+var sprite: Texture2D
 
 var is_temporary: bool:
 	get:
@@ -31,6 +33,10 @@ func configure(new_def: CellDef, leader: bool, new_controller: BattleController,
 	home_position = new_home
 	position = new_home
 	pulse_seed = controller.rng.randf() * TAU
+
+## 컨트롤러가 스폰 직후 호출. 텍스처가 있으면 우선 사용하고, 없으면 코드 도형.
+func set_sprite(texture: Texture2D) -> void:
+	sprite = texture
 
 func step(delta: float) -> void:
 	if expire_timer > 0.0:
@@ -63,10 +69,20 @@ func _draw() -> void:
 	if is_leader:
 		radius = 23.0 * pulse
 
-	draw_circle(Vector2.ZERO, radius + 8.0, _with_alpha(def.color, 0.14))
-	draw_circle(Vector2.ZERO, radius, def.color)
-	draw_circle(Vector2(-radius * 0.2, -radius * 0.14), radius * 0.42, _with_alpha(def.accent, 0.76))
-	draw_circle(Vector2(radius * 0.32, radius * 0.22), radius * 0.22, _with_alpha(Color("#0B2D2A"), 0.26))
+	if sprite != null:
+		# Display diameter ~ radius * 2.55 to match the silhouette weight.
+		var size := Vector2.ONE * radius * 2.55
+		var top_left := Vector2(-size.x * 0.5, -size.y * 0.5)
+		var rect := Rect2(top_left, size)
+		# Rim glow underlay for the soft neon outline the style guide requires.
+		var glow_color := _with_alpha(def.color, 0.16)
+		draw_rect(rect.grow(6.0), glow_color, true)
+		draw_texture_rect(sprite, rect, false)
+	else:
+		draw_circle(Vector2.ZERO, radius + 8.0, _with_alpha(def.color, 0.14))
+		draw_circle(Vector2.ZERO, radius, def.color)
+		draw_circle(Vector2(-radius * 0.2, -radius * 0.14), radius * 0.42, _with_alpha(def.accent, 0.76))
+		draw_circle(Vector2(radius * 0.32, radius * 0.22), radius * 0.22, _with_alpha(Color("#0B2D2A"), 0.26))
 
 	if is_leader:
 		draw_arc(Vector2.ZERO, radius + 7.0, -PI * 0.45, PI * 1.45, 48, def.accent, 4.5, true)
